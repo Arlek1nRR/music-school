@@ -1,10 +1,42 @@
 /* ==========================================================================
-   ОБЩИЙ СКРИПТ — поведение header, scroll-reveal, плавающий виджет,
-   мобильное меню, обработка форм.
+   ОБЩИЙ СКРИПТ — header, тема (light/dark), scroll-reveal, виджет, формы.
    ========================================================================== */
 
 (function () {
   'use strict';
+
+  // ---------- ТЕМА (light / dark) ----------
+  const THEME_KEY = 'music-school-theme';
+  const root = document.documentElement;
+
+  const getInitialTheme = () => {
+    const saved = localStorage.getItem(THEME_KEY);
+    if (saved === 'light' || saved === 'dark') return saved;
+    return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+  };
+
+  const applyTheme = (theme) => {
+    root.setAttribute('data-theme', theme);
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) {
+      meta.setAttribute('content', theme === 'light' ? '#F4ECDD' : '#0F0E1A');
+    }
+    document.querySelectorAll('.theme-toggle').forEach(btn => {
+      btn.setAttribute('aria-pressed', theme === 'light' ? 'true' : 'false');
+      btn.setAttribute('aria-label', theme === 'light' ? 'Включить тёмную тему' : 'Включить светлую тему');
+    });
+  };
+
+  applyTheme(getInitialTheme());
+
+  document.addEventListener('click', e => {
+    const btn = e.target.closest('.theme-toggle');
+    if (!btn) return;
+    const current = root.getAttribute('data-theme') || 'dark';
+    const next = current === 'dark' ? 'light' : 'dark';
+    applyTheme(next);
+    localStorage.setItem(THEME_KEY, next);
+  });
 
   // ---------- HEADER: эффект при прокрутке ----------
   const header = document.querySelector('.header-inner');
@@ -83,7 +115,6 @@
         btn.disabled = true;
         btn.textContent = 'Отправляем...';
       }
-      // Имитация отправки — в продакшене заменить на реальный fetch
       setTimeout(() => {
         if (btn) {
           btn.textContent = '✓ Заявка принята';
