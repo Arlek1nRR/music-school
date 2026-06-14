@@ -1137,18 +1137,6 @@ img { max-width: 100%; display: block; }
   -webkit-appearance: none;
 }
 
-.field select {
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23A8A4C2' stroke-width='2'><polyline points='6 9 12 15 18 9'/></svg>");
-  background-repeat: no-repeat;
-  background-position: right 18px center;
-  background-size: 16px;
-  padding-right: 48px;
-}
-
-:root[data-theme="light"] .field select {
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236B5A45' stroke-width='2'><polyline points='6 9 12 15 18 9'/></svg>");
-}
-
 .field textarea { min-height: 120px; resize: vertical; }
 
 .field input::placeholder,
@@ -1170,6 +1158,188 @@ img { max-width: 100%; display: block; }
   background: var(--input-bg);
   box-shadow: 0 0 0 4px var(--shadow-glow-accent);
 }
+
+/* ==========================================================================
+   КАСТОМНЫЙ DROPDOWN для "Направление"
+   Внутри .field кладётся .select (обёртка), а в неё — невидимый нативный
+   <select> для отправки формы, кнопка-триггер и список-меню .select-menu.
+   ========================================================================== */
+.select {
+  position: relative;
+}
+
+.select-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 18px;
+  padding-right: 48px;
+  background: var(--input-bg);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  color: var(--color-text);
+  font-family: inherit;
+  font-size: var(--fs-sm);
+  font-weight: 400;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.3s var(--ease-out), background 0.4s var(--ease-out);
+  position: relative;
+}
+
+.select-trigger:hover {
+  border-color: var(--color-border-accent);
+}
+
+.select.open .select-trigger {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 4px var(--shadow-glow-accent);
+}
+
+.select-trigger .select-label {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--color-text);
+  transition: color 0.3s var(--ease-out);
+}
+
+.select-trigger .select-label.placeholder {
+  color: var(--color-text-dim);
+}
+
+.select-trigger .select-caret {
+  position: absolute;
+  right: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+  color: var(--color-text-muted);
+  transition: transform 0.3s var(--ease-spring), color 0.3s var(--ease-out);
+  pointer-events: none;
+}
+
+.select.open .select-trigger .select-caret {
+  transform: translateY(-50%) rotate(180deg);
+  color: var(--color-accent);
+}
+
+/* Полностью прячем нативный <select>. Используем <select> + дублирующий
+   <input type="hidden" name="direction">, чтобы:
+   - нативная required-валидация работала на скрытом <select>;
+   - значение для отправки формы бралось из скрытого <input>;
+   - нативный UI (рамка/стрелка/фокус-кольцо) гарантированно не просвечивал
+     в обход opacity/clip-path на любых браузерах и темах. */
+.select > select {
+  display: none !important;
+}
+
+.select-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px;
+  margin: 0;
+  list-style: none;
+  background: var(--color-glass-strong);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  box-shadow: var(--shadow-hover);
+  opacity: 0;
+  transform: translateY(-6px) scale(0.98);
+  transform-origin: top center;
+  pointer-events: none;
+  transition: opacity 0.2s var(--ease-out), transform 0.2s var(--ease-out);
+}
+
+/* Светлая тема: поднимаем контраст меню — стекло заметно теплее,
+   чтобы оно не сливалось с формой-карточкой. */
+:root[data-theme="light"] .select-menu {
+  background: rgba(255, 252, 245, 0.92);
+  border-color: rgba(140, 100, 60, 0.28);
+  box-shadow:
+    0 20px 60px rgba(120, 90, 50, 0.22),
+    0 2px 6px rgba(120, 90, 50, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+.select.open .select-menu {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+.select-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 14px;
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  color: var(--color-text);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.2s var(--ease-out), color 0.2s var(--ease-out),
+              border-color 0.2s var(--ease-out);
+  user-select: none;
+}
+
+.select-option:hover,
+.select-option:focus-visible {
+  outline: none;
+  background: var(--color-glass);
+  border-color: var(--color-border);
+  color: var(--color-accent-soft);
+}
+
+:root[data-theme="light"] .select-option:hover,
+:root[data-theme="light"] .select-option:focus-visible {
+  background: rgba(168, 116, 62, 0.10);
+  border-color: rgba(168, 116, 62, 0.25);
+}
+
+.select-option.is-active {
+  background: var(--color-glass-strong);
+  border-color: var(--color-border-accent);
+  color: var(--color-accent);
+}
+
+.select-option.is-selected {
+  background: rgba(232, 184, 109, 0.14);
+  border-color: var(--color-border-accent);
+  color: var(--color-accent);
+}
+
+:root[data-theme="light"] .select-option.is-selected {
+  background: rgba(168, 116, 62, 0.16);
+}
+
+.select-option .check {
+  margin-left: auto;
+  width: 16px;
+  height: 16px;
+  opacity: 0;
+  color: var(--color-accent);
+  flex-shrink: 0;
+  transition: opacity 0.2s var(--ease-out);
+}
+
+.select-option.is-selected .check { opacity: 1; }
 
 .form-card .btn { width: 100%; margin-top: 8px; }
 
@@ -1290,6 +1460,11 @@ img { max-width: 100%; display: block; }
   min-height: 64px;
 }
 
+/* Ряд с 5 ячейками (Пробное / Разовое / 4 / 8) */
+.compare-row.five {
+  grid-template-columns: 1.5fr 1fr 1fr 1fr 1.1fr;
+}
+
 .compare-row:first-child { border-top: none; }
 .compare-row.head {
   background: var(--color-glass);
@@ -1308,6 +1483,14 @@ img { max-width: 100%; display: block; }
 
 .compare-row .label { text-align: left; }
 .compare-row .cell { text-align: center; }
+
+/* Широкая ячейка, растянутая на всю ширину таблицы (аналог colspan) */
+.compare-row .cell.cell-wide {
+  grid-column: 2 / -1;
+  text-align: left;
+  color: var(--color-text-muted);
+  font-size: var(--fs-sm);
+}
 
 .compare-row.head .label,
 .compare-row.head .cell {
@@ -1336,6 +1519,56 @@ img { max-width: 100%; display: block; }
   border-radius: 100px;
   margin-left: 8px;
   vertical-align: middle;
+}
+
+/* Мягкий бейдж для "экономии N%" (без яркого акцентного фона) */
+.compare-row .cell .badge.badge-soft {
+  background: var(--color-glass-strong);
+  color: var(--color-accent-soft);
+  border: 1px solid var(--color-border-accent);
+  margin-left: 6px;
+  letter-spacing: 0.05em;
+  text-transform: none;
+  font-weight: 500;
+}
+
+:root[data-theme="light"] .compare-row .cell .badge.badge-soft {
+  background: rgba(168, 116, 62, 0.10);
+  border-color: rgba(168, 116, 62, 0.30);
+  color: #8A5A2C;
+}
+
+/* Приглушённое тире для "неприменимо" */
+.compare-row .cell .price-muted {
+  color: var(--color-text-dim);
+  font-weight: 400;
+}
+
+/* Подпись мелким шрифтом под ценой (за урок / с человека) */
+.compare-row .cell .price-sub {
+  display: inline-block;
+  margin-top: 2px;
+  font-size: 0.7rem;
+  color: var(--color-text-dim);
+  font-weight: 400;
+}
+
+/* Подпись в label (например "(фортепиано / гитара / вокал)" под названием формата) */
+.compare-row .label small {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.72rem;
+  color: var(--color-text-dim);
+  font-weight: 400;
+}
+
+/* Поля в lesson-meta на странице уроков */
+.lesson-meta-item .price-sub {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.7rem;
+  color: var(--color-text-dim);
+  font-weight: 400;
 }
 
 /* ==========================================================================

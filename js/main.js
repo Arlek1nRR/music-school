@@ -147,4 +147,135 @@
       }
     });
   });
+
+  // ---------- КАСТОМНЫЙ DROPDOWN (стилизованный <select>) ----------
+  // Нативный <select> остаётся в DOM (для отправки формы и нативной валидации),
+  // но визуально скрыт (display: none). Кастомный триггер + .select-menu
+  // управляют отображением. Параллельно создаём <input type="hidden" name=...>,
+  // который и отправляется с формой — он гарантированно "чист" и не зависит
+  // от того, как браузер обрабатывает скрытый <select>.
+  const closeAllSelects = (except) => {
+    document.querySelectorAll('.select.open').forEach(s => {
+      if (s === except) return;
+      s.classList.remove('open');
+      const t = s.querySelector('[data-select-trigger]');
+      if (t) t.setAttribute('aria-expanded', 'false');
+    });
+  };
+
+  const initSelect = (root) => {
+    const select = root.querySelector('select');
+    const trigger = root.querySelector('[data-select-trigger]');
+    const label = root.querySelector('[data-select-label]');
+    const menu = root.querySelector('[data-select-menu]');
+    if (!select || !trigger || !label || !menu) return;
+
+    // Создаём/находим скрытый input, дублирующий значение <select> для отправки.
+    // Снимаем name с нативного <select> (он display:none и не должен отправляться),
+    // иначе в FormData поле появится дважды.
+    let hidden = null;
+    if (select.name) {
+      hidden = root.querySelector('input[type="hidden"][data-select-hidden]');
+      if (!hidden) {
+        hidden = document.createElement('input');
+        hidden.type = 'hidden';
+        hidden.name = select.name;
+        hidden.setAttribute('data-select-hidden', '');
+        root.insertBefore(hidden, select.nextSibling);
+      }
+      // Убираем name с нативного <select>, чтобы не дублировать поле в FormData.
+      select.removeAttribute('name');
+    }
+
+    const options = Array.from(menu.querySelectorAll('.select-option'));
+
+    const setLabel = (text, isPlaceholder) => {
+      label.textContent = text;
+      label.classList.toggle('placeholder', !!isPlaceholder);
+    };
+
+    const markSelected = (value) => {
+      options.forEach(o => {
+        o.classList.toggle('is-selected', o.dataset.value === value);
+      });
+    };
+
+    const open = () => {
+      closeAllSelects(root);
+      root.classList.add('open');
+      trigger.setAttribute('aria-expanded', 'true');
+    };
+
+    const close = () => {
+      root.classList.remove('open');
+      trigger.setAttribute('aria-expanded', 'false');
+    };
+
+    // Инициализация из текущего значения <select> (восстановление при сбросе формы)
+    const syncFromSelect = () => {
+      const opt = select.options[select.selectedIndex];
+      if (!opt || !opt.value) {
+        setLabel(select.options[0] ? select.options[0].textContent : '', true);
+        markSelected('');
+        select.value = '';
+        if (hidden) hidden.value = '';
+      } else {
+        setLabel(opt.textContent, false);
+        markSelected(opt.value);
+        if (hidden) hidden.value = opt.value;
+      }
+    };
+    syncFromSelect();
+
+    trigger.addEventListener('click', e => {
+      e.stopPropagation();
+      if (root.classList.contains('open')) close();
+      else open();
+    });
+
+    options.forEach(opt => {
+      const choose = () => {
+        const value = opt.dataset.value;
+        select.value = value;
+        if (hidden) hidden.value = value;
+        // прокидываем change, чтобы ловили сторонние слушатели
+        select.dispatchEvent(new Event('change', { bubbles: true }));
+        setLabel(opt.querySelector('span').textContent, false);
+        markSelected(value);
+        close();
+        trigger.focus();
+      };
+      opt.addEventListener('click', e => {
+        e.stopPropagation();
+        choose();
+      });
+      opt.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          choose();
+        }
+      });
+    });
+
+    // Закрытие по клику вне / Escape
+    document.addEventListener('click', e => {
+      if (!root.contains(e.target)) close();
+    });
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && root.classList.contains('open')) {
+        close();
+        trigger.focus();
+      }
+    });
+
+    // Сброс значения при вызове form.reset() — стандартное событие 'reset' на <form>
+    if (select.form) {
+      select.form.addEventListener('reset', () => {
+        // после reset значение select становится "", подтянем UI на следующий тик
+        setTimeout(syncFromSelect, 0);
+      });
+    }
+  };
+
+  document.querySelectorAll('[data-select]').forEach(initSelect);
 })();

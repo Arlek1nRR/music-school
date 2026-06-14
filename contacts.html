@@ -139,7 +139,7 @@
 
         <div class="reveal" id="trial">
           <h2 style="font-size: 1.8rem; margin-bottom: 8px;">Запишитесь на пробный урок</h2>
-          <p style="margin-bottom: 28px;">30 минут с преподавателем, знакомство и подбор расписания. Без обязательств.</p>
+          <p style="margin-bottom: 28px;">45 минут с преподавателем, знакомство и подбор расписания. Пробное занятие платное: 800 ₽ индивидуальное, 600 ₽ групповое.</p>
           <form class="form-card" data-form style="padding: 28px; background: rgba(15, 14, 26, 0.5);">
             <div class="form-row">
               <div class="field"><label for="c-name">Имя</label><input type="text" id="c-name" placeholder="Как к вам обращаться?" required /></div>
@@ -148,14 +148,36 @@
             <div class="form-row">
               <div class="field">
                 <label for="c-direction">Направление</label>
-                <select id="c-direction" required>
-                  <option value="">Выберите направление</option>
-                  <option value="piano">Фортепиано</option>
-                  <option value="guitar">Гитара</option>
-                  <option value="vocal">Вокал</option>
-                </select>
+                <div class="select" data-select>
+                  <select id="c-direction" name="direction" required>
+                    <option value="" disabled selected>Выберите направление</option>
+                    <option value="piano">Фортепиано</option>
+                    <option value="guitar">Гитара</option>
+                    <option value="vocal">Вокал</option>
+                  </select>
+                  <button type="button" class="select-trigger" aria-haspopup="listbox" aria-expanded="false" data-select-trigger>
+                    <span class="select-label placeholder" data-select-label>Выберите направление</span>
+                    <svg class="select-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <polyline points="6 9 12 15 18 9"/>
+                    </svg>
+                  </button>
+                  <ul class="select-menu" role="listbox" tabindex="-1" data-select-menu>
+                    <li class="select-option" role="option" data-value="piano" tabindex="0">
+                      <span>Фортепиано</span>
+                      <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                    </li>
+                    <li class="select-option" role="option" data-value="guitar" tabindex="0">
+                      <span>Гитара</span>
+                      <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                    </li>
+                    <li class="select-option" role="option" data-value="vocal" tabindex="0">
+                      <span>Вокал</span>
+                      <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                    </li>
+                  </ul>
+                </div>
               </div>
-              <div class="field"><label for="c-age">Возраст ученика</label><input type="number" id="c-age" min="4" max="99" placeholder="Например, 9" required /></div>
+              <div class="field"><label for="c-age">Возраст ученика</label><input type="text" inputmode="numeric" pattern="[0-9]*" id="c-age" name="age" maxlength="2" placeholder="Например, 9" required /></div>
             </div>
             <div class="field">
               <label for="c-time">Удобное время</label>
