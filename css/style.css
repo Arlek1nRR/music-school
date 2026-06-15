@@ -1465,6 +1465,11 @@ img { max-width: 100%; display: block; }
   grid-template-columns: 1.5fr 1fr 1fr 1fr 1.1fr;
 }
 
+/* Ряд с 4 ячейками (Разовое / Абонемент 4 занятия / Абонемент 8 занятий) */
+.compare-row.four {
+  grid-template-columns: 1.4fr 1fr 1.15fr 1.3fr;
+}
+
 .compare-row:first-child { border-top: none; }
 .compare-row.head {
   background: var(--color-glass);
