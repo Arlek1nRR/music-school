@@ -128,8 +128,8 @@
           <p style="margin-bottom: 28px;">45 минут с преподавателем, знакомство и подбор расписания. Пробное занятие платное: 800 ₽ индивидуальное, 600 ₽ групповое.</p>
           <form class="form-card" data-form style="padding: 28px; background: rgba(15, 14, 26, 0.5);">
             <div class="form-row">
-              <div class="field"><label for="c-name">Имя</label><input type="text" id="c-name" placeholder="Как к вам обращаться?" required /></div>
-              <div class="field"><label for="c-phone">Телефон</label><input type="tel" id="c-phone" placeholder="+7 (___) ___-__-__" required /></div>
+              <div class="field"><label for="c-name">Имя</label><input type="text" id="c-name" name="name" placeholder="Как к вам обращаться?" required /></div>
+              <div class="field"><label for="c-phone">Телефон</label><input type="tel" id="c-phone" name="phone" placeholder="+7 (___) ___-__-__" required /></div>
             </div>
             <div class="form-row">
               <div class="field">
@@ -167,7 +167,7 @@
             </div>
             <div class="field">
               <label for="c-time">Удобное время</label>
-              <input type="text" id="c-time" placeholder="Будни после 16:00, выходные — любое время" />
+              <input type="text" id="c-time" name="time" placeholder="Будни после 16:00, выходные — любое время" />
             </div>
             <button type="submit" class="btn btn-primary btn-lg">Записаться на пробный урок</button>
             <p class="form-note">Нажимая кнопку, вы соглашаетесь с обработкой персональных данных.</p>

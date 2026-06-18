@@ -1,11 +1,7 @@
 {
   "version": 2,
   "buildCommand": null,
-  "functions": {
-    "api/*.mjs": {
-      "runtime": "nodejs20.x"
-    }
-  },
+  
   "rewrites": [
     { "source": "/api/requests", "destination": "/api/requests.mjs" },
     { "source": "/api/config", "destination": "/api/config.mjs" }
