@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Заявки · Админ-панель</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Bebas+Neue&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="admin.css" />
+</head>
+<body class="admin-panel">
+  <header class="admin-header">
+    <a href="./" class="admin-logo">
+      <span class="mark">♪</span>
+      <span>[Название школы] · Админ</span>
+    </a>
+    <div class="admin-actions">
+      <span class="admin-user" id="admin-user"></span>
+      <button class="icon-btn" id="theme-toggle" aria-label="Переключить тему">
+        <svg id="theme-icon-dark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+      <button class="icon-btn" id="logout-btn" aria-label="Выйти" title="Выйти">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main class="admin-main">
+    <h1 class="admin-title">Заявки с сайта</h1>
+    <p class="admin-sub">Заявки на пробный урок и консультации по преподавателям</p>
+
+    <div class="tabs" role="tablist">
+      <button class="tab active" data-tab="trial" role="tab" aria-selected="true">
+        Пробный урок <span class="count" id="count-trial">0</span>
+      </button>
+      <button class="tab" data-tab="consultation" role="tab" aria-selected="false">
+        Консультации <span class="count" id="count-consultation">0</span>
+      </button>
+    </div>
+
+    <div class="toolbar">
+      <div class="left">
+        <div class="search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="search" id="search" placeholder="Поиск по имени или телефону…" />
+        </div>
+      </div>
+      <div class="right">
+        <button class="btn btn-ghost" id="refresh-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+          Обновить
+        </button>
+      </div>
+    </div>
+
+    <div class="table-wrap" id="table-wrap">
+      <div class="empty" id="empty" hidden>
+        <div class="empty-icon">∅</div>
+        <div>Заявок пока нет</div>
+      </div>
+      <table class="requests" id="requests-table" hidden>
+        <thead>
+          <tr>
+            <th data-col="name">Имя</th>
+            <th data-col="phone">Телефон</th>
+            <th data-col="details" id="th-details">Направление / Возраст / Время</th>
+            <th data-col="created_at" class="sortable" id="th-date">
+              Создано <span id="sort-indicator">↓</span>
+            </th>
+            <th data-col="status">Статус</th>
+          </tr>
+        </thead>
+        <tbody id="requests-body"></tbody>
+      </table>
+    </div>
+  </main>
+
+  <script type="module" src="admin.js"></script>
+</body>
+</html>

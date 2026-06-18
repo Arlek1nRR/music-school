@@ -105,32 +105,9 @@
     reveals.forEach(el => el.classList.add('in'));
   }
 
-  // ---------- ФОРМЫ: лёгкая валидация + "отправка" ----------
-  document.querySelectorAll('form[data-form]').forEach(form => {
-    form.addEventListener('submit', e => {
-      e.preventDefault();
-      const btn = form.querySelector('button[type="submit"]');
-      const original = btn ? btn.textContent : '';
-      if (btn) {
-        btn.disabled = true;
-        btn.textContent = 'Отправляем...';
-      }
-      setTimeout(() => {
-        if (btn) {
-          btn.textContent = '✓ Заявка принята';
-          btn.style.background = 'linear-gradient(135deg, #5DEFA0, #25D366)';
-        }
-        form.reset();
-        setTimeout(() => {
-          if (btn) {
-            btn.disabled = false;
-            btn.textContent = original;
-            btn.style.background = '';
-          }
-        }, 3000);
-      }, 900);
-    });
-  });
+  // ---------- ФОРМЫ: реальная отправка через /api/requests (см. js/form-handler.js) ----------
+  // Имитация удалена — за нас работает form-handler.js, подключённый как
+  // <script type="module"> на страницах с формами.
 
   // ---------- ПЛАВНЫЙ ЯКОРНЫЙ СКРОЛЛ ----------
   document.querySelectorAll('a[href^="#"]').forEach(link => {

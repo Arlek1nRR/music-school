@@ -1,0 +1,24 @@
+{
+  "version": 2,
+  "buildCommand": null,
+  "functions": {
+    "api/*.mjs": {
+      "runtime": "nodejs20.x"
+    }
+  },
+  "rewrites": [
+    { "source": "/api/requests", "destination": "/api/requests.mjs" },
+    { "source": "/api/config", "destination": "/api/config.mjs" }
+  ],
+  "redirects": [
+    { "source": "/admin", "destination": "/admin/", "statusCode": 301 }
+  ],
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-store" }
+      ]
+    }
+  ]
+}

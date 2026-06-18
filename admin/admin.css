@@ -1,0 +1,376 @@
+/* ==========================================================================
+   admin/admin.css — стили админ-панели в стиле сайта.
+   Использует CSS-переменные из css/style.css (data-theme).
+   ========================================================================== */
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  color: var(--color-text);
+  background: var(--color-bg-1);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- фон (как у сайта: индиго / кремовый + блобы) ---------- */
+body {
+  background:
+    radial-gradient(ellipse at top, var(--color-bg-2) 0%, var(--color-bg-1) 60%) fixed;
+  position: relative;
+  overflow-x: hidden;
+}
+body::before, body::after {
+  content: '';
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.5;
+  z-index: 0;
+  pointer-events: none;
+}
+body::before {
+  width: 480px; height: 480px;
+  top: -120px; left: -120px;
+  background: var(--color-accent);
+  opacity: 0.18;
+}
+body::after {
+  width: 520px; height: 520px;
+  bottom: -180px; right: -160px;
+  background: var(--color-accent-2);
+  opacity: 0.15;
+}
+
+/* ---------- шапка ---------- */
+.admin-header {
+  position: sticky; top: 0; z-index: 50;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 32px;
+  background: var(--color-glass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--color-border);
+}
+.admin-logo {
+  display: flex; align-items: center; gap: 10px;
+  color: var(--color-text);
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+.admin-logo .mark {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--color-accent), var(--color-accent-2));
+  color: #0F0E1A;
+  font-size: 1.1rem;
+}
+.admin-actions { display: flex; align-items: center; gap: 12px; }
+.admin-user {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+.icon-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 38px; height: 38px;
+  border-radius: 10px;
+  background: var(--color-glass);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+.icon-btn:hover { background: var(--color-glass-strong); }
+.icon-btn:active { transform: scale(0.95); }
+.icon-btn svg { width: 18px; height: 18px; }
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  padding: 9px 16px;
+  border-radius: 10px;
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background 0.2s, transform 0.1s;
+}
+.btn-primary {
+  background: linear-gradient(135deg, var(--color-accent), var(--color-accent-2));
+  color: #0F0E1A;
+  font-weight: 600;
+}
+.btn-primary:hover { filter: brightness(1.05); }
+.btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+.btn-ghost {
+  background: var(--color-glass);
+  color: var(--color-text);
+  border-color: var(--color-border);
+}
+.btn-ghost:hover { background: var(--color-glass-strong); }
+
+/* ---------- основной контейнер ---------- */
+.admin-main {
+  position: relative; z-index: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 24px 80px;
+}
+.admin-title {
+  margin: 0 0 4px;
+  font-family: 'Bebas Neue', 'Inter', sans-serif;
+  font-size: 2.2rem;
+  letter-spacing: 0.5px;
+  color: var(--color-text);
+}
+.admin-sub {
+  margin: 0 0 28px;
+  color: var(--color-text-muted);
+  font-size: 0.95rem;
+}
+
+/* ---------- вкладки ---------- */
+.tabs {
+  display: flex; gap: 8px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--color-border);
+}
+.tab {
+  padding: 12px 20px;
+  background: transparent;
+  border: 0;
+  color: var(--color-text-muted);
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: color 0.2s, border-color 0.2s;
+  position: relative;
+}
+.tab:hover { color: var(--color-text); }
+.tab.active {
+  color: var(--color-text);
+  border-bottom-color: var(--color-accent);
+}
+.tab .count {
+  display: inline-block;
+  min-width: 22px; padding: 0 6px;
+  margin-left: 6px;
+  background: var(--color-glass);
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  font-size: 0.78rem;
+  text-align: center;
+  color: var(--color-text-muted);
+}
+.tab.active .count {
+  background: var(--color-accent);
+  color: #0F0E1A;
+  border-color: var(--color-accent);
+  font-weight: 700;
+}
+
+/* ---------- панель фильтров/действий ---------- */
+.toolbar {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.toolbar .left, .toolbar .right { display: flex; gap: 8px; align-items: center; }
+.search {
+  position: relative;
+  flex: 1; max-width: 360px;
+}
+.search input {
+  width: 100%;
+  padding: 9px 12px 9px 36px;
+  border-radius: 10px;
+  background: var(--color-glass);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  font: inherit;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.search input:focus { border-color: var(--color-accent); }
+.search svg {
+  position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+  width: 16px; height: 16px; color: var(--color-text-muted);
+}
+
+/* ---------- таблица ---------- */
+.table-wrap {
+  background: var(--color-glass);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  overflow: hidden;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+table.requests {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+table.requests th, table.requests td {
+  padding: 12px 16px;
+  text-align: left;
+  border-bottom: 1px solid var(--color-border);
+  vertical-align: middle;
+}
+table.requests th {
+  background: var(--color-glass-strong);
+  color: var(--color-text-muted);
+  font-weight: 600;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  user-select: none;
+}
+table.requests th.sortable { cursor: pointer; }
+table.requests th.sortable:hover { color: var(--color-text); }
+table.requests tbody tr {
+  transition: background 0.15s;
+  position: relative;
+}
+table.requests tbody tr:hover { background: var(--color-glass); }
+table.requests tbody tr.is-new {
+  background: rgba(232, 184, 109, 0.08);
+  box-shadow: inset 3px 0 0 var(--color-accent);
+}
+table.requests tbody tr:last-child td { border-bottom: 0; }
+
+.cell-name { font-weight: 600; color: var(--color-text); }
+.cell-phone a {
+  color: var(--color-accent-2);
+  text-decoration: none;
+}
+.cell-phone a:hover { text-decoration: underline; }
+.cell-time { color: var(--color-text-muted); font-size: 0.85rem; white-space: nowrap; }
+.cell-empty { color: var(--color-text-dim); font-style: italic; }
+
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  background: var(--color-glass);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+}
+.badge-direction-piano { color: #E8B86D; border-color: rgba(232, 184, 109, 0.4); }
+.badge-direction-guitar { color: #7DD3FC; border-color: rgba(125, 211, 252, 0.4); }
+.badge-direction-vocal { color: #C4A8FF; border-color: rgba(196, 168, 255, 0.4); }
+
+/* ---------- статус ---------- */
+.status-select {
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: var(--color-glass);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.status-select:focus { border-color: var(--color-accent); }
+.status-select.status-new { border-color: var(--color-accent); color: var(--color-accent); font-weight: 600; }
+.status-select.status-in_progress { border-color: var(--color-accent-2); color: var(--color-accent-2); }
+.status-select.status-done { border-color: var(--color-text-dim); color: var(--color-text-dim); }
+
+/* ---------- пустое состояние ---------- */
+.empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--color-text-muted);
+}
+.empty-icon { font-size: 2.4rem; margin-bottom: 8px; }
+
+/* ---------- лоадер ---------- */
+.loader {
+  display: inline-block;
+  width: 18px; height: 18px;
+  border: 2px solid var(--color-border);
+  border-top-color: var(--color-accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  vertical-align: middle;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ---------- логин ---------- */
+.login-wrap {
+  min-height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+  position: relative; z-index: 1;
+}
+.login-card {
+  width: 100%; max-width: 420px;
+  background: var(--color-glass);
+  border: 1px solid var(--color-border);
+  border-radius: 20px;
+  padding: 36px 32px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+}
+.login-card h1 {
+  margin: 0 0 6px;
+  font-family: 'Bebas Neue', 'Inter', sans-serif;
+  font-size: 1.8rem;
+  letter-spacing: 0.4px;
+  color: var(--color-text);
+}
+.login-card p { margin: 0 0 24px; color: var(--color-text-muted); font-size: 0.92rem; }
+
+.field {
+  margin-bottom: 16px;
+}
+.field label {
+  display: block;
+  font-size: 0.82rem;
+  color: var(--color-text-muted);
+  margin-bottom: 6px;
+}
+.field input {
+  width: 100%;
+  padding: 11px 14px;
+  border-radius: 10px;
+  background: var(--color-glass);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  font: inherit;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.field input:focus { border-color: var(--color-accent); }
+
+.login-card .btn-primary { width: 100%; padding: 12px; margin-top: 6px; }
+.login-error {
+  margin: 12px 0 0;
+  padding: 10px 12px;
+  background: rgba(231, 106, 106, 0.15);
+  border: 1px solid rgba(231, 106, 106, 0.4);
+  color: #E76A6A;
+  border-radius: 8px;
+  font-size: 0.88rem;
+}
+.login-hint { margin-top: 18px; font-size: 0.82rem; color: var(--color-text-dim); text-align: center; }
+
+/* ---------- мобильная адаптация ---------- */
+@media (max-width: 720px) {
+  .admin-header { padding: 12px 16px; }
+  .admin-main { padding: 20px 14px 60px; }
+  .admin-title { font-size: 1.7rem; }
+  .tabs { overflow-x: auto; flex-wrap: nowrap; }
+  .tab { white-space: nowrap; padding: 10px 14px; }
+  .table-wrap { overflow-x: auto; }
+  table.requests { min-width: 640px; }
+}

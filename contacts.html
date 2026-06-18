@@ -9,10 +9,11 @@
   <meta name="keywords" content="музыкальная школа Кудрово контакты, адрес музыкальной школы Кудрово, отзывы музыкальная школа Кудрово" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Bebas+Neue&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/nike.css" />
 </head>
-<body>
+<body class="contacts">
 
   <header class="site-header">
     <div class="header-inner">
@@ -25,22 +26,6 @@
         <a href="contacts.html" class="active">Контакты</a>
       </nav>
       <div class="header-actions">
-        <button class="theme-toggle" type="button" aria-label="Переключить тему" aria-pressed="false">
-          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="4"/>
-            <line x1="12" y1="2" x2="12" y2="4"/>
-            <line x1="12" y1="20" x2="12" y2="22"/>
-            <line x1="4.93" y1="4.93" x2="6.34" y2="6.34"/>
-            <line x1="17.66" y1="17.66" x2="19.07" y2="19.07"/>
-            <line x1="2" y1="12" x2="4" y2="12"/>
-            <line x1="20" y1="12" x2="22" y2="12"/>
-            <line x1="4.93" y1="19.07" x2="6.34" y2="17.66"/>
-            <line x1="17.66" y1="6.34" x2="19.07" y2="4.93"/>
-          </svg>
-          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-          </svg>
-        </button>
         <a href="#trial" class="btn btn-primary btn-sm">Записаться</a>
         <button class="menu-toggle" aria-label="Меню" aria-expanded="false"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
       </div>
@@ -55,6 +40,7 @@
   </header>
 
   <section class="hero" style="min-height: 45vh; padding: 140px 0 40px;">
+    <div class="hero-media" aria-hidden="true"></div>
     <div class="hero-bg" aria-hidden="true">
       <div class="hero-blob hero-blob-1"></div>
       <div class="hero-blob hero-blob-2"></div>
@@ -347,5 +333,6 @@
   </div>
 
   <script src="js/main.js"></script>
+  <script type="module" src="js/form-handler.js"></script>
 </body>
 </html>

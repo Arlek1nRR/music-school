@@ -1,0 +1,1855 @@
+/* ============================================================
+   NIKE COMMERCE SYSTEM — overrides for music school
+   Loaded AFTER style.css. Откат: удалить <link href="css/nike.css">.
+   ============================================================ */
+
+/* ===== 1. ТОКЕНЫ ===== */
+:root {
+  /* Цвета — pure black/white/gray */
+  --nike-ink:            #111111;
+  --nike-on-primary:     #ffffff;
+  --nike-canvas:         #ffffff;
+  --nike-soft-cloud:     #f5f5f5;
+  --nike-charcoal:       #39393b;
+  --nike-ash:            #4b4b4d;
+  --nike-mute:           #707072;
+  --nike-stone:          #9e9ea0;
+  --nike-hairline:       #cacacb;
+  --nike-hairline-soft:  #e5e5e5;
+  --nike-sale:           #d30005;
+  --nike-sale-deep:      #780700;
+  --nike-success:        #007d48;
+
+  /* Шрифты */
+  --nike-font-ui:      'Inter', 'Helvetica Neue', Arial, sans-serif;
+  --nike-font-display: 'Bebas Neue', 'Anton', 'Arial Narrow', sans-serif;
+  --nike-font-serif:   'Instrument Serif', 'Times New Roman', serif;
+
+  /* Размеры */
+  --nike-fs-display: clamp(48px, 7vw, 96px);
+  --nike-fs-xl:   32px;
+  --nike-fs-lg:   24px;
+  --nike-fs-md:   16px;
+  --nike-fs-sm:   14px;
+  --nike-fs-xs:   12px;
+  --nike-fs-xxs:  9px;
+
+  /* Line-heights */
+  --nike-lh-display: 0.9;
+  --nike-lh-tight:   1.2;
+  --nike-lh-body:    1.5;
+  --nike-lh-loose:   1.75;
+
+  /* Радиусы */
+  --nike-r-none:    0px;
+  --nike-r-input:   24px;
+  --nike-r-pill:    30px;
+  --nike-r-circle:  9999px;
+
+  /* Spacing (8px) */
+  --nike-s-xxs:  2px;
+  --nike-s-xs:   4px;
+  --nike-s-sm:   8px;
+  --nike-s-md:   12px;
+  --nike-s-lg:   18px;
+  --nike-s-xl:   24px;
+  --nike-s-xxl:  30px;
+  --nike-s-section: 48px;
+
+  /* Layout */
+  --nike-container: 1440px;
+  --nike-gutter: 48px;
+}
+
+/* ===== 2. ГЛОБАЛЬНЫЙ RESET ПОВЕДЕНИЯ ===== */
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--nike-font-ui);
+  font-weight: 400;
+  font-size: var(--nike-fs-md);
+  line-height: var(--nike-lh-body);
+  color: var(--nike-ink);
+  background: var(--nike-canvas);
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  position: relative;
+}
+
+/* Гасим атмосферный фон liquid-glass (блобы, сетка, drift) */
+body::before,
+body::after { display: none !important; }
+
+/* Гасим все декоративные тени и glass-эффекты из style.css */
+:root {
+  --shadow-glass: none;
+  --shadow-hover: none;
+  --shadow-glow-accent: none;
+}
+
+/* ===== 3. ТИПОГРАФИКА ===== */
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--nike-font-ui);
+  font-weight: 500;
+  letter-spacing: var(--nike-tracking, 0);
+  color: var(--nike-ink);
+  margin: 0;
+}
+
+h1 {
+  font-size: var(--nike-fs-display);
+  font-family: var(--nike-font-display);
+  font-weight: 500;
+  line-height: var(--nike-lh-display);
+  text-transform: uppercase;
+  letter-spacing: 0;
+  /* Убираем градиент из старого style.css */
+  background: none !important;
+  -webkit-text-fill-color: var(--nike-ink) !important;
+}
+
+h2 {
+  font-size: var(--nike-fs-xl);
+  line-height: var(--nike-lh-tight);
+  font-weight: 500;
+}
+
+h3 {
+  font-size: var(--nike-fs-md);
+  line-height: var(--nike-lh-loose);
+  font-weight: 500;
+}
+
+h4 {
+  font-size: var(--nike-fs-md);
+  line-height: var(--nike-lh-body);
+  font-weight: 600;
+}
+
+p { color: var(--nike-mute); margin: 0; line-height: var(--nike-lh-body); }
+
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+img { max-width: 100%; display: block; }
+
+/* ===== 4. КОНТЕЙНЕР / СЕКЦИИ ===== */
+
+.container {
+  width: 100%;
+  max-width: var(--nike-container);
+  margin: 0 auto;
+  padding: 0 var(--nike-gutter);
+}
+
+.section {
+  padding: var(--nike-s-section) 0;
+  position: relative;
+}
+
+@media (max-width: 1024px) {
+  .section { padding: 32px 0; }
+}
+
+@media (max-width: 768px) {
+  :root { --nike-gutter: 16px; }
+  .section { padding: 24px 0; }
+}
+
+.section-head {
+  margin-bottom: var(--nike-s-xl);
+}
+
+.section-head .eyebrow {
+  display: inline-block;
+  font-family: var(--nike-font-ui);
+  font-size: var(--nike-fs-xs);
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--nike-mute);
+  padding: 4px 12px;
+  background: var(--nike-canvas);
+  border: 1px solid var(--nike-hairline);
+  border-radius: var(--nike-r-pill);
+  margin-bottom: var(--nike-s-md);
+}
+
+.section-head h2 {
+  font-family: var(--nike-font-ui);
+  font-size: var(--nike-fs-xl);
+  font-weight: 500;
+  line-height: var(--nike-lh-tight);
+  color: var(--nike-ink);
+  margin-bottom: var(--nike-s-md);
+  text-transform: none;
+}
+
+.section-head p {
+  max-width: 640px;
+  margin: 0;
+  font-size: var(--nike-fs-md);
+  line-height: var(--nike-lh-body);
+  color: var(--nike-mute);
+}
+
+/* Выравнивание по центру — для index, где section-head был с text-align: center */
+.section-head:not(.left) {
+  text-align: left;
+}
+
+/* ===== 5. HEADER / NAV / КНОПКИ ===== */
+
+.site-header {
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: var(--nike-canvas);
+  box-shadow: inset 0 -1px 0 var(--nike-hairline-soft);
+  pointer-events: auto;
+  padding: 0;
+}
+
+.header-inner {
+  max-width: var(--nike-container);
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--nike-s-md);
+  padding: 0 var(--nike-gutter);
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  height: 60px;
+}
+
+.header-inner.scrolled {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: var(--nike-s-sm);
+  font-family: var(--nike-font-ui);
+  font-weight: 700;
+  font-size: var(--nike-fs-md);
+  letter-spacing: 0;
+  color: var(--nike-ink);
+  white-space: nowrap;
+}
+
+.logo-mark {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  background: var(--nike-ink);
+  border-radius: 0;
+  color: var(--nike-on-primary);
+  font-weight: 700;
+  font-size: var(--nike-fs-md);
+  box-shadow: none;
+  position: relative;
+  overflow: visible;
+  transition: none;
+}
+
+.logo-mark::after { display: none; }
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin: 0 auto;
+}
+
+.nav a {
+  position: relative;
+  font-family: var(--nike-font-ui);
+  font-size: var(--nike-fs-md);
+  font-weight: 500;
+  color: var(--nike-ink);
+  padding: 20px var(--nike-s-md);
+  border-radius: 0;
+  background: transparent !important;
+  transition: color 0.2s ease;
+}
+
+.nav a:hover { color: var(--nike-mute); }
+
+.nav a.active {
+  color: var(--nike-ink);
+  background: transparent !important;
+}
+
+.nav a.active::after {
+  content: "";
+  position: absolute;
+  left: var(--nike-s-md);
+  right: var(--nike-s-md);
+  bottom: 0;
+  height: 2px;
+  background: var(--nike-ink);
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--nike-s-sm);
+}
+
+/* Кнопка-иконка (theme toggle СКРЫТ, остаётся menu-toggle) */
+.menu-toggle {
+  display: none;
+  width: 40px;
+  height: 40px;
+  background: var(--nike-soft-cloud);
+  border: none;
+  border-radius: var(--nike-r-circle);
+  color: var(--nike-ink);
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+}
+
+.menu-toggle:hover { background: var(--nike-hairline); }
+
+/* ===== КНОПКИ (PILL 30px) ===== */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--nike-s-sm);
+  padding: 12px 24px;
+  font-family: var(--nike-font-ui);
+  font-size: var(--nike-fs-md);
+  font-weight: 500;
+  line-height: var(--nike-lh-body);
+  border: none;
+  border-radius: var(--nike-r-pill);
+  cursor: pointer;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  transition: background 0.2s ease, color 0.2s ease, opacity 0.15s ease;
+  white-space: nowrap;
+  background: transparent;
+  color: var(--nike-ink);
+  box-shadow: none;
+  height: 48px;
+}
+
+.btn-primary {
+  background: var(--nike-canvas);
+  color: var(--nike-ink);
+  box-shadow: none;
+}
+
+.btn-primary::before { display: none; }
+
+.btn-primary:hover { background: var(--nike-soft-cloud); transform: none; }
+.btn-primary:active { transform: scale(0.5); opacity: 0.5; }
+
+.btn-ghost {
+  background: var(--nike-soft-cloud);
+  color: var(--nike-ink);
+  border: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.btn-ghost:hover { background: var(--nike-hairline); transform: none; color: var(--nike-ink); }
+
+.btn-sm { padding: 8px 16px; font-size: var(--nike-fs-sm); height: 40px; }
+.btn-lg { padding: 16px 32px; font-size: var(--nike-fs-md); height: 48px; }
+
+/* ===== 6. HERO ===== */
+
+.hero {
+  position: relative;
+  min-height: 80vh;
+  padding: 0;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+  background: var(--nike-soft-cloud);
+}
+
+.hero-media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-color: var(--nike-soft-cloud);
+}
+
+/* Default — заглушка soft-cloud, если фото не подложено. Конкретные URL — ниже. */
+.hero-media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,0) 40%, rgba(0,0,0,0.55) 100%);
+  pointer-events: none;
+}
+
+.hero-bg,
+.hero-blob,
+.hero-wave,
+.wave-ring { display: none !important; }
+
+.hero-inner {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  align-items: end;
+  gap: 60px;
+  padding: 120px 0 var(--nike-s-section);
+  width: 100%;
+  max-width: var(--nike-container);
+  margin: 0 auto;
+  padding-left: var(--nike-gutter);
+  padding-right: var(--nike-gutter);
+}
+
+.hero-content {
+  color: var(--nike-on-primary);
+  animation: none;
+}
+
+.hero h1 {
+  color: var(--nike-on-primary);
+  background: none !important;
+  -webkit-text-fill-color: var(--nike-on-primary) !important;
+  margin-bottom: var(--nike-s-lg);
+  font-size: var(--nike-fs-display);
+  font-family: var(--nike-font-display);
+  font-weight: 500;
+  line-height: var(--nike-lh-display);
+  text-transform: uppercase;
+  letter-spacing: 0;
+}
+
+.hero h1 .accent {
+  background: none !important;
+  -webkit-text-fill-color: var(--nike-on-primary) !important;
+  display: inline;
+  background-image: none !important;
+  color: var(--nike-on-primary);
+}
+
+.hero-sub {
+  font-family: var(--nike-font-ui);
+  font-size: var(--nike-fs-md);
+  font-weight: 500;
+  color: var(--nike-on-primary);
+  max-width: 540px;
+  margin-bottom: var(--nike-s-xl);
+  line-height: var(--nike-lh-body);
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--nike-s-sm);
+  padding: 6px 14px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border: 1px solid var(--nike-hairline);
+  border-radius: var(--nike-r-pill);
+  font-family: var(--nike-font-ui);
+  font-size: var(--nike-fs-xs);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--nike-ink);
+  margin-bottom: var(--nike-s-lg);
+}
+
+.hero-badge .pulse {
+  width: 8px;
+  height: 8px;
+  background: var(--nike-success);
+  border-radius: var(--nike-r-circle);
+  box-shadow: none;
+  animation: none;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--nike-s-sm);
+  margin-bottom: var(--nike-s-xl);
+}
+
+.hero-stats {
+  display: flex;
+  gap: var(--nike-s-xxl);
+  flex-wrap: wrap;
+  color: var(--nike-on-primary);
+}
+
+.hero-stat .num {
+  font-family: var(--nike-font-display);
+  font-size: var(--nike-fs-xl);
+  font-weight: 500;
+  background: none !important;
+  -webkit-text-fill-color: var(--nike-on-primary) !important;
+  color: var(--nike-on-primary);
+  line-height: 1;
+  letter-spacing: 0;
+}
+
+.hero-stat .label {
+  font-size: var(--nike-fs-sm);
+  color: rgba(255, 255, 255, 0.85);
+  margin-top: var(--nike-s-xs);
+  font-weight: 500;
+}
+
+/* Hero card — member-benefit-card: чёрный, без скруглений, без тени */
+.hero-card {
+  position: relative;
+  padding: var(--nike-s-xl);
+  background: var(--nike-ink);
+  color: var(--nike-on-primary);
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  animation: none;
+  max-width: 360px;
+  margin-left: auto;
+  width: 100%;
+}
+
+.hero-card::before { display: none; }
+
+.hero-card .card-title {
+  font-family: var(--nike-font-ui);
+  font-size: var(--nike-fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--nike-on-primary);
+  margin-bottom: var(--nike-s-md);
+}
+
+.hero-card .next-lesson {
+  font-family: var(--nike-font-display);
+  font-size: var(--nike-fs-lg);
+  font-weight: 500;
+  color: var(--nike-on-primary);
+  margin-bottom: var(--nike-s-sm);
+  line-height: var(--nike-lh-tight);
+  text-transform: uppercase;
+  letter-spacing: 0;
+}
+
+.hero-card p {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: var(--nike-fs-sm);
+  margin: 0 0 var(--nike-s-md);
+  line-height: var(--nike-lh-body);
+}
+
+.hero-card .lesson-meta {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--nike-font-ui);
+  font-size: var(--nike-fs-sm);
+  color: var(--nike-on-primary);
+  padding-top: var(--nike-s-md);
+  margin-top: var(--nike-s-md);
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  font-weight: 500;
+}
+
+.hero-card .lesson-meta span:last-child { color: var(--nike-on-primary); }
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ===== 7. HERO — фоновые фото по страницам ===== */
+body.home .hero-media       { background-image: url("../assets/hero-home.jpg"); }
+body.lessons .hero-media    { background-image: url("../assets/hero-lessons.jpg"); }
+body.teachers .hero-media   { background-image: url("../assets/hero-teachers.jpg"); }
+body.pricing .hero-media    { background-image: url("../assets/hero-pricing.jpg"); }
+body.contacts .hero-media   { background-image: url("../assets/hero-contacts.jpg"); }
+
+/* Главная: фото пианино за надписью «Играй. Пой. Услышь…» — усиливаем затемнение слева,
+   чтобы белый заголовок читался на любом фрагменте изображения.
+   Композиция сдвинута вправо: пианино ближе к правому краю экрана. */
+body.home .hero-media {
+  background-position: 70% 35%;
+}
+body.home .hero-media::after {
+  background: linear-gradient(90deg,
+              rgba(0,0,0,0.78) 0%,
+              rgba(0,0,0,0.55) 45%,
+              rgba(0,0,0,0.15) 100%),
+             linear-gradient(180deg, rgba(0,0,0,0) 50%, rgba(0,0,0,0.45) 100%);
+}
+
+/* Главная: правая колонка с карточкой «Ближайшее событие» удалена из разметки —
+   переключаем grid на одну колонку, чтобы hero-content занимал всю ширину. */
+body.home .hero-inner {
+  grid-template-columns: 1fr;
+}
+
+/* Главная: заголовок «Играй. Пой. Услышь музыку в себе.» — Instrument Serif Regular.
+   У этого шрифта нет жирных начертаний, поэтому держим font-weight: 400
+   и слегка раздвигаем трекинг (0.01em) для воздуха на крупном кегле. */
+body.home .hero h1 {
+  font-family: var(--nike-font-serif);
+  font-weight: 400;
+  font-style: normal;
+  letter-spacing: 0.01em;
+  text-transform: none;
+}
+
+/* Главная: кнопка-CTA — белый фон + тёмный текст. Привязка к body.home
+   поднимает специфичность выше, чем у .btn-primary в style.css, чтобы
+   градиентный фон и яркие hover-эффекты точно не перебивали новый стиль. */
+body.home .btn-primary,
+body.home a.btn-primary,
+body.home .hero .btn-primary {
+  background: var(--nike-canvas) !important;
+  color: var(--nike-ink) !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+body.home .btn-primary::before { display: none !important; }
+body.home .btn-primary:hover {
+  background: var(--nike-soft-cloud) !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* ===== 8. КАРТОЧКИ (product-card) ===== */
+
+.glass-card {
+  position: relative;
+  padding: 0;
+  background: var(--nike-canvas);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  transition: background 0.2s ease;
+  overflow: hidden;
+  animation: none;
+  display: flex;
+  flex-direction: column;
+}
+
+.glass-card::before { display: none; }
+
+.glass-card:hover {
+  transform: none;
+  background: var(--nike-canvas);
+  border: none;
+  box-shadow: none;
+}
+
+.glass-card:hover::before { display: none; }
+
+.glass-card .card-icon {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  height: auto;
+  display: grid;
+  place-items: center;
+  background: var(--nike-soft-cloud);
+  border: none;
+  border-radius: 0;
+  margin-bottom: var(--nike-s-md);
+  color: var(--nike-ink);
+  position: relative;
+}
+
+.glass-card .card-icon svg {
+  width: 48px;
+  height: 48px;
+  color: var(--nike-ink);
+  filter: none;
+}
+
+.glass-card > h3,
+.glass-card > p,
+.glass-card > .card-tags,
+.glass-card > .card-link {
+  padding-left: 0;
+}
+
+.glass-card h3 { padding: 0 var(--nike-s-md) var(--nike-s-sm); margin: 0; }
+.glass-card p {
+  font-size: var(--nike-fs-sm);
+  padding: 0 var(--nike-s-md);
+  margin: 0 0 var(--nike-s-md);
+  color: var(--nike-mute);
+  line-height: var(--nike-lh-body);
+}
+
+.glass-card .card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--nike-s-sm);
+  margin: 0 var(--nike-s-md) var(--nike-s-md);
+  color: var(--nike-ink);
+  font-weight: 500;
+  font-size: var(--nike-fs-md);
+  text-decoration: underline;
+  transition: gap 0.2s ease;
+}
+
+.glass-card .card-link:hover { gap: 12px; color: var(--nike-ink); }
+
+.card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--nike-s-sm);
+  padding: 0 var(--nike-s-md);
+  margin: 0 0 var(--nike-s-md);
+}
+
+.tag {
+  display: inline-block;
+  font-family: var(--nike-font-ui);
+  font-size: var(--nike-fs-xs);
+  font-weight: 500;
+  padding: 4px 12px;
+  background: var(--nike-canvas);
+  border: 1px solid var(--nike-hairline);
+  border-radius: var(--nike-r-pill);
+  color: var(--nike-ink);
+  line-height: var(--nike-lh-body);
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.tag.tag-accent {
+  background: var(--nike-ink);
+  border: 1px solid var(--nike-ink);
+  color: var(--nike-on-primary);
+}
+
+/* Сетка карточек */
+.cards-grid,
+.teachers-grid,
+.reviews-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--nike-s-md);
+}
+
+@media (max-width: 1024px) {
+  .cards-grid,
+  .teachers-grid,
+  .reviews-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 599px) {
+  .cards-grid,
+  .teachers-grid,
+  .reviews-grid { grid-template-columns: 1fr; }
+}
+
+/* ===== 9. ПРЕПОДАВАТЕЛИ ===== */
+
+.teacher-card {
+  text-align: left;
+  padding-bottom: var(--nike-s-md);
+}
+
+.teacher-photo {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  height: auto;
+  margin: 0 0 var(--nike-s-md);
+  border-radius: 0;
+  background: var(--nike-soft-cloud);
+  display: grid;
+  place-items: center;
+  font-family: var(--nike-font-display);
+  font-size: 64px;
+  font-weight: 500;
+  color: var(--nike-ink);
+  border: none;
+  box-shadow: none;
+  transition: none;
+  text-transform: uppercase;
+  letter-spacing: 0;
+}
+
+.teacher-card:hover .teacher-photo { transform: none; }
+
+.teacher-card h3 {
+  font-family: var(--nike-font-ui);
+  font-size: var(--nike-fs-md);
+  font-weight: 500;
+  color: var(--nike-ink);
+  margin: 0 0 var(--nike-s-xs);
+  padding: 0;
+  text-transform: none;
+}
+
+.teacher-role {
+  font-family: var(--nike-font-ui);
+  font-size: var(--nike-fs-sm);
+  color: var(--nike-mute);
+  font-weight: 500;
+  letter-spacing: 0;
+  margin: 0 0 var(--nike-s-md);
+  text-transform: none;
+}
+
+.teacher-bio {
+  font-size: var(--nike-fs-sm);
+  text-align: left;
+  margin: 0 0 var(--nike-s-md);
+  color: var(--nike-mute);
+  padding: 0;
+  list-style: none;
+}
+
+.teacher-bio li {
+  list-style: none;
+  padding: var(--nike-s-md) 0;
+  border-top: 1px solid var(--nike-hairline);
+  margin: 0;
+  color: var(--nike-mute);
+  font-size: var(--nike-fs-sm);
+  line-height: var(--nike-lh-body);
+  position: static;
+}
+
+.teacher-bio li:first-child { border-top: 1px solid var(--nike-hairline); padding-top: var(--nike-s-md); }
+.teacher-bio li:last-child  { padding-bottom: 0; }
+
+.teacher-bio li::before { display: none; }
+
+.teacher-quote {
+  margin: 0;
+  padding: var(--nike-s-md) 0 0;
+  background: transparent;
+  border-left: none;
+  border-top: 1px solid var(--nike-hairline);
+  border-radius: 0;
+  font-style: normal;
+  font-size: var(--nike-fs-md);
+  color: var(--nike-ink);
+  line-height: var(--nike-lh-body);
+  text-align: left;
+  font-weight: 500;
+  position: static;
+}
+
+.teacher-quote::before { display: none; content: none; }
+
+/* ===== 10. УРОКИ (lessons.html) ===== */
+
+.lesson-block {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--nike-s-xl);
+  align-items: start;
+  margin-bottom: var(--nike-s-section);
+}
+
+.lesson-block.reverse { direction: ltr; }
+
+.lesson-visual {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  background: var(--nike-soft-cloud);
+  border: none;
+  border-radius: 0;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  box-shadow: none;
+}
+
+.lesson-visual::before { display: none; }
+
+.lesson-visual svg {
+  position: relative;
+  z-index: 1;
+  width: 40%;
+  height: 40%;
+  color: var(--nike-ink);
+  filter: none;
+}
+
+.lesson-text h2 {
+  font-family: var(--nike-font-display);
+  font-size: clamp(40px, 5vw, 64px);
+  font-weight: 500;
+  text-transform: uppercase;
+  line-height: var(--nike-lh-tight);
+  margin-bottom: var(--nike-s-md);
+  letter-spacing: 0;
+}
+
+.lesson-text p {
+  font-size: var(--nike-fs-md);
+  margin-bottom: var(--nike-s-md);
+  line-height: var(--nike-lh-body);
+  color: var(--nike-mute);
+}
+
+.lesson-text .card-tags { margin-top: var(--nike-s-md); padding: 0; }
+
+.lesson-meta {
+  display: flex;
+  gap: var(--nike-s-md);
+  margin-top: var(--nike-s-lg);
+  flex-wrap: wrap;
+  padding-top: var(--nike-s-lg);
+  border-top: 1px solid var(--nike-hairline);
+}
+
+.lesson-meta-item {
+  flex: 1;
+  min-width: 140px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+}
+
+.lesson-meta-item .lbl {
+  font-family: var(--nike-font-ui);
+  font-size: var(--nike-fs-xs);
+  letter-spacing: 0;
+  text-transform: uppercase;
+  color: var(--nike-mute);
+  margin-bottom: var(--nike-s-xs);
+  font-weight: 500;
+}
+
+.lesson-meta-item .val {
+  font-family: var(--nike-font-display);
+  font-weight: 500;
+  color: var(--nike-ink);
+  font-size: var(--nike-fs-lg);
+  text-transform: uppercase;
+  letter-spacing: 0;
+  line-height: 1.1;
+}
+
+.lesson-meta-item .val small.price-sub {
+  font-family: var(--nike-font-ui);
+  display: block;
+  margin-top: var(--nike-s-xs);
+  font-size: var(--nike-fs-xs);
+  color: var(--nike-mute);
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+@media (max-width: 1024px) {
+  .lesson-block { grid-template-columns: 1fr; gap: var(--nike-s-lg); }
+  .lesson-block.reverse { direction: ltr; }
+}
+
+/* ===== 11. ЦЕНЫ (pricing.html) ===== */
+
+.compare {
+  max-width: 100%;
+  margin: 0 0 var(--nike-s-xl);
+  background: var(--nike-canvas);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border: none;
+  border-top: 1px solid var(--nike-hairline);
+  border-bottom: 1px solid var(--nike-hairline);
+  border-radius: 0;
+  overflow: visible;
+  box-shadow: none;
+}
+
+.compare-row {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr 1fr;
+  align-items: center;
+  padding: var(--nike-s-xl) 0;
+  border-top: 1px solid var(--nike-hairline);
+  transition: background 0.2s ease;
+  min-height: auto;
+}
+
+.compare-row.four { grid-template-columns: 1.4fr 1fr 1.15fr 1.3fr; }
+.compare-row.five { grid-template-columns: 1.5fr 1fr 1fr 1fr 1.1fr; }
+
+.compare-row:first-child { border-top: 1px solid var(--nike-hairline); }
+.compare-row.head { background: transparent; }
+.compare-row:hover:not(.head) { background: var(--nike-soft-cloud); }
+
+.compare-row .label,
+.compare-row .cell {
+  font-family: var(--nike-font-ui);
+  font-size: var(--nike-fs-md);
+  font-weight: 400;
+  color: var(--nike-ink);
+  line-height: var(--nike-lh-body);
+  letter-spacing: 0;
+}
+
+.compare-row .label { text-align: left; }
+.compare-row .cell  { text-align: center; }
+
+.compare-row .cell.cell-wide {
+  grid-column: 2 / -1;
+  text-align: left;
+  color: var(--nike-mute);
+  font-size: var(--nike-fs-sm);
+}
+
+.compare-row.head .label,
+.compare-row.head .cell {
+  font-size: var(--nike-fs-xs);
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--nike-mute);
+  font-family: var(--nike-font-ui);
+}
+
+.compare-row .cell.featured {
+  color: var(--nike-ink);
+  font-weight: 600;
+  position: relative;
+}
+
+.compare-row .cell .badge {
+  display: inline-block;
+  font-family: var(--nike-font-ui);
+  font-size: var(--nike-fs-xs);
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  padding: 4px 10px;
+  background: var(--nike-ink);
+  color: var(--nike-on-primary);
+  border-radius: var(--nike-r-pill);
+  margin-left: var(--nike-s-sm);
+  vertical-align: middle;
+  text-transform: uppercase;
+}
+
+.compare-row .cell .badge.badge-soft {
+  background: var(--nike-soft-cloud);
+  color: var(--nike-ink);
+  border: 1px solid var(--nike-hairline);
+  margin-left: var(--nike-s-xs);
+  letter-spacing: 0;
+  text-transform: none;
+  font-weight: 500;
+}
+
+.compare-row .cell .price-muted { color: var(--nike-mute); font-weight: 400; }
+
+.compare-row .cell .price-sub {
+  display: block;
+  margin-top: var(--nike-s-xs);
+  font-size: var(--nike-fs-xs);
+  color: var(--nike-mute);
+  font-weight: 400;
+}
+
+.compare-row .label small {
+  display: block;
+  margin-top: var(--nike-s-xs);
+  font-size: var(--nike-fs-xs);
+  color: var(--nike-mute);
+  font-weight: 400;
+}
+
+/* ===== 12. КОНТАКТЫ и ОТЗЫВЫ ===== */
+
+.contacts-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--nike-s-xl);
+  align-items: start;
+}
+
+.contact-info {
+  padding: 0;
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.contact-list { list-style: none; padding: 0; margin: 0; }
+
+.contact-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--nike-s-md);
+  padding: var(--nike-s-xl) 0;
+  border-top: 1px solid var(--nike-hairline);
+  margin: 0;
+}
+
+.contact-list li:first-child { border-top: 1px solid var(--nike-hairline); padding-top: var(--nike-s-xl); }
+
+.contact-list .icon {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  background: var(--nike-soft-cloud);
+  border: none;
+  border-radius: var(--nike-r-circle);
+  color: var(--nike-ink);
+}
+
+.contact-list .info-label {
+  font-family: var(--nike-font-ui);
+  font-size: var(--nike-fs-xs);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--nike-mute);
+  margin-bottom: var(--nike-s-xs);
+  font-weight: 500;
+}
+
+.contact-list .info-val {
+  color: var(--nike-ink);
+  font-weight: 500;
+  font-size: var(--nike-fs-md);
+  line-height: var(--nike-lh-body);
+}
+
+.contact-list a.info-val:hover { color: var(--nike-mute); }
+
+.map-placeholder {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  margin-top: var(--nike-s-xl);
+  background: var(--nike-soft-cloud);
+  border: none;
+  border-radius: 0;
+  display: grid;
+  place-items: center;
+  color: var(--nike-mute);
+  font-size: var(--nike-fs-sm);
+  position: relative;
+  overflow: hidden;
+}
+
+.map-placeholder::before { display: none; }
+
+@keyframes pinDrop { from, to { transform: rotate(-45deg); } }
+
+/* Отзывы */
+.reviews-grid { gap: var(--nike-s-md); margin-top: var(--nike-s-xl); }
+
+.review-card {
+  position: relative;
+  padding: var(--nike-s-xl);
+  background: var(--nike-soft-cloud);
+  border: none;
+  border-radius: 0;
+}
+
+.review-card .review-text {
+  font-size: var(--nike-fs-md);
+  line-height: var(--nike-lh-body);
+  color: var(--nike-ink);
+  margin: 0 0 var(--nike-s-md);
+  font-style: normal;
+  font-weight: 500;
+}
+
+.review-card .review-author {
+  display: flex;
+  align-items: center;
+  gap: var(--nike-s-md);
+  padding-top: var(--nike-s-md);
+  border-top: 1px solid var(--nike-hairline);
+  margin: 0;
+}
+
+.review-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--nike-r-circle);
+  background: var(--nike-ink);
+  display: grid;
+  place-items: center;
+  font-family: var(--nike-font-ui);
+  font-weight: 600;
+  color: var(--nike-on-primary);
+  font-size: var(--nike-fs-sm);
+  flex-shrink: 0;
+  letter-spacing: 0.05em;
+}
+
+.review-name { font-weight: 600; font-size: var(--nike-fs-sm); color: var(--nike-ink); }
+.review-role { font-size: var(--nike-fs-xs); color: var(--nike-mute); margin-top: var(--nike-s-xs); }
+
+.stars {
+  display: flex;
+  gap: 2px;
+  color: var(--nike-ink);
+  font-size: var(--nike-fs-sm);
+  margin-bottom: var(--nike-s-md);
+  letter-spacing: 2px;
+}
+
+/* ===== 13. ФОРМЫ ===== */
+
+.form-card {
+  max-width: 100%;
+  margin: 0;
+  padding: var(--nike-s-xl);
+  background: var(--nike-soft-cloud);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  transition: none;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--nike-s-md);
+  margin-bottom: var(--nike-s-md);
+}
+
+.field { margin-bottom: var(--nike-s-md); position: relative; }
+
+.field label {
+  display: block;
+  font-family: var(--nike-font-ui);
+  font-size: var(--nike-fs-xs);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--nike-mute);
+  margin-bottom: var(--nike-s-sm);
+}
+
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  padding: 12px 16px;
+  background: var(--nike-canvas);
+  border: none;
+  border-bottom: 1px solid var(--nike-hairline);
+  border-radius: 0;
+  color: var(--nike-ink);
+  font-family: var(--nike-font-ui);
+  font-size: var(--nike-fs-md);
+  font-weight: 500;
+  height: 48px;
+  transition: border-color 0.2s ease;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.field textarea { min-height: 120px; resize: vertical; height: auto; }
+
+.field input::placeholder,
+.field textarea::placeholder { color: var(--nike-mute); }
+
+.field input:hover,
+.field select:hover,
+.field textarea:hover { border-bottom-color: var(--nike-ink); }
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  outline: none;
+  border-bottom-color: var(--nike-ink);
+  background: var(--nike-canvas);
+  box-shadow: none;
+}
+
+/* Кастомный селект (Направление) — flat pill-input */
+.select { position: relative; }
+
+.select-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--nike-s-md);
+  padding: 12px 16px;
+  padding-right: 48px;
+  background: var(--nike-canvas);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border: none;
+  border-bottom: 1px solid var(--nike-hairline);
+  border-radius: 0;
+  color: var(--nike-ink);
+  font-family: var(--nike-font-ui);
+  font-size: var(--nike-fs-md);
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  height: 48px;
+  transition: border-color 0.2s ease;
+  position: relative;
+}
+
+.select-trigger:hover { border-bottom-color: var(--nike-ink); }
+
+.select.open .select-trigger {
+  border-bottom-color: var(--nike-ink);
+  box-shadow: none;
+}
+
+.select-trigger .select-label {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--nike-ink);
+  transition: none;
+}
+
+.select-trigger .select-label.placeholder { color: var(--nike-mute); }
+
+.select-trigger .select-caret {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+  color: var(--nike-ink);
+  transition: transform 0.2s ease;
+  pointer-events: none;
+}
+
+.select.open .select-trigger .select-caret { transform: translateY(-50%) rotate(180deg); color: var(--nike-ink); }
+
+.select > select { display: none !important; }
+
+.select-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: var(--nike-s-sm);
+  margin: 0;
+  list-style: none;
+  background: var(--nike-canvas);
+  border: 1px solid var(--nike-hairline);
+  border-radius: var(--nike-r-input);
+  box-shadow: none;
+  opacity: 0;
+  transform: translateY(-6px);
+  transform-origin: top center;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.select.open .select-menu { opacity: 1; transform: translateY(0); pointer-events: auto; }
+
+.select-option {
+  display: flex;
+  align-items: center;
+  gap: var(--nike-s-sm);
+  padding: 12px 16px;
+  font-family: var(--nike-font-ui);
+  font-size: var(--nike-fs-md);
+  font-weight: 500;
+  color: var(--nike-ink);
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+  user-select: none;
+}
+
+.select-option:hover,
+.select-option:focus-visible {
+  outline: none;
+  background: var(--nike-soft-cloud);
+  border: none;
+  color: var(--nike-ink);
+}
+
+.select-option.is-active,
+.select-option.is-selected {
+  background: var(--nike-soft-cloud);
+  border: none;
+  color: var(--nike-ink);
+  font-weight: 600;
+}
+
+.select-option .check {
+  margin-left: auto;
+  width: 16px;
+  height: 16px;
+  opacity: 0;
+  color: var(--nike-ink);
+  flex-shrink: 0;
+  transition: opacity 0.2s ease;
+}
+
+.select-option.is-selected .check { opacity: 1; }
+
+.form-card .btn { width: 100%; margin-top: var(--nike-s-md); }
+
+.form-note {
+  text-align: left;
+  font-family: var(--nike-font-ui);
+  font-size: var(--nike-fs-xs);
+  color: var(--nike-mute);
+  margin-top: var(--nike-s-md);
+  line-height: var(--nike-lh-body);
+}
+
+/* ===== 14. ГАЛЕРЕЯ / НАГРАДЫ ===== */
+
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: 200px;
+  gap: var(--nike-s-sm);
+  margin-bottom: var(--nike-s-xl);
+}
+
+.gallery-item {
+  position: relative;
+  border-radius: 0;
+  overflow: hidden;
+  background: var(--nike-soft-cloud);
+  border: none;
+  display: grid;
+  place-items: center;
+  font-size: var(--nike-fs-sm);
+  color: var(--nike-mute);
+  cursor: pointer;
+  transition: none;
+}
+
+.gallery-item:nth-child(1) { grid-row: span 2; }
+.gallery-item:nth-child(4) { grid-column: span 2; }
+
+.gallery-item::after { display: none; }
+
+.gallery-item:hover { transform: none; border: none; box-shadow: none; }
+.gallery-item:hover::after { display: none; }
+
+.gallery-item .gallery-placeholder {
+  font-family: var(--nike-font-display);
+  font-size: var(--nike-fs-sm);
+  color: var(--nike-mute);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.gallery-item .gallery-caption {
+  position: absolute;
+  bottom: var(--nike-s-md);
+  left: var(--nike-s-md);
+  right: var(--nike-s-md);
+  z-index: 1;
+  font-family: var(--nike-font-ui);
+  font-size: var(--nike-fs-sm);
+  color: var(--nike-ink);
+  font-weight: 500;
+}
+
+.awards-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--nike-s-md);
+}
+
+.award {
+  display: flex;
+  align-items: center;
+  gap: var(--nike-s-md);
+  padding: var(--nike-s-md);
+  background: transparent;
+  border: none;
+  border-top: 1px solid var(--nike-hairline);
+  border-radius: 0;
+  transition: none;
+}
+
+.award:hover { background: transparent; border-color: var(--nike-hairline); transform: none; }
+
+.award-icon {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  background: var(--nike-ink);
+  border-radius: 0;
+  color: var(--nike-on-primary);
+  font-weight: 600;
+  font-size: var(--nike-fs-md);
+  box-shadow: none;
+}
+
+.award-text {
+  font-family: var(--nike-font-ui);
+  font-size: var(--nike-fs-sm);
+  color: var(--nike-ink);
+  font-weight: 500;
+  line-height: var(--nike-lh-body);
+}
+
+.award-text small {
+  display: block;
+  color: var(--nike-mute);
+  font-size: var(--nike-fs-xs);
+  margin-top: var(--nike-s-xs);
+  font-weight: 400;
+}
+
+/* ===== 15. ФУТЕР ===== */
+
+.site-footer {
+  margin-top: var(--nike-s-section);
+  padding: var(--nike-s-xl) 0 var(--nike-s-xl);
+  background: var(--nike-canvas);
+  border-top: 1px solid var(--nike-hairline);
+  transition: none;
+}
+
+.footer-inner {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr 1fr;
+  gap: var(--nike-s-xl);
+  margin-bottom: var(--nike-s-xl);
+}
+
+.footer-brand p {
+  max-width: 320px;
+  margin: var(--nike-s-md) 0 var(--nike-s-lg);
+  font-size: var(--nike-fs-sm);
+  line-height: var(--nike-lh-body);
+  color: var(--nike-mute);
+}
+
+.footer-col h4 {
+  font-family: var(--nike-font-ui);
+  font-size: var(--nike-fs-md);
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--nike-ink);
+  margin-bottom: var(--nike-s-md);
+  font-weight: 600;
+}
+
+.footer-col ul { list-style: none; padding: 0; margin: 0; }
+.footer-col li { margin-bottom: var(--nike-s-sm); line-height: var(--nike-lh-body); }
+.footer-col a {
+  color: var(--nike-mute);
+  font-size: var(--nike-fs-sm);
+  transition: color 0.2s ease;
+  text-decoration: none;
+}
+.footer-col a:hover { color: var(--nike-ink); }
+
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: var(--nike-s-md);
+  border-top: 1px solid var(--nike-hairline);
+  font-family: var(--nike-font-ui);
+  font-size: var(--nike-fs-xxs);
+  color: var(--nike-mute);
+  flex-wrap: wrap;
+  gap: var(--nike-s-sm);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.footer-socials { display: flex; gap: var(--nike-s-sm); }
+.footer-socials .social-link {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  background: var(--nike-soft-cloud);
+  border: none;
+  border-radius: var(--nike-r-circle);
+  color: var(--nike-ink);
+  transition: background 0.2s ease;
+}
+.footer-socials .social-link:hover {
+  background: var(--nike-hairline);
+  color: var(--nike-ink);
+  transform: none;
+  border: none;
+}
+
+/* ===== 16. ПЛАВАЮЩИЙ ВИДЖЕТ ===== */
+
+.floating-widget {
+  position: fixed;
+  bottom: var(--nike-s-xl);
+  right: var(--nike-s-xl);
+  z-index: 90;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--nike-s-md);
+}
+
+.widget-trigger {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--nike-r-circle);
+  background: var(--nike-ink);
+  color: var(--nike-on-primary);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  box-shadow: none;
+  transition: background 0.2s ease;
+  border: none;
+  position: relative;
+  animation: none;
+}
+
+.widget-trigger:hover { transform: none; }
+.widget-trigger.open { background: var(--nike-canvas); color: var(--nike-ink); border: 1px solid var(--nike-ink); }
+
+.widget-menu {
+  position: absolute;
+  bottom: 72px;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--nike-s-sm);
+  padding: var(--nike-s-sm);
+  background: var(--nike-canvas);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border: 1px solid var(--nike-hairline);
+  border-radius: var(--nike-r-input);
+  box-shadow: none;
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  min-width: 200px;
+}
+
+.widget-menu.open { opacity: 1; transform: translateY(0); pointer-events: auto; }
+
+.widget-item {
+  display: flex;
+  align-items: center;
+  gap: var(--nike-s-md);
+  padding: 12px 16px;
+  background: var(--nike-soft-cloud);
+  border: none;
+  border-radius: 0;
+  color: var(--nike-ink);
+  font-family: var(--nike-font-ui);
+  font-size: var(--nike-fs-sm);
+  font-weight: 500;
+  transition: background 0.2s ease;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.widget-item:hover {
+  background: var(--nike-hairline);
+  border: none;
+  transform: none;
+}
+
+.widget-item .ic {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--nike-r-circle);
+  background: var(--nike-ink);
+  color: var(--nike-on-primary);
+  flex-shrink: 0;
+}
+
+.widget-item.tg .ic,
+.widget-item.wa .ic {
+  background: var(--nike-ink);
+  color: var(--nike-on-primary);
+}
+
+/* ===== 17. REVEAL — компрессия Nike ===== */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+.reveal.in { opacity: 1; transform: translateY(0); }
+
+.reveal-delay-1 { transition-delay: 0.05s; }
+.reveal-delay-2 { transition-delay: 0.1s; }
+.reveal-delay-3 { transition-delay: 0.15s; }
+.reveal-delay-4 { transition-delay: 0.2s; }
+
+/* ===== 18. MOBILE NAV ===== */
+
+@media (max-width: 1024px) {
+  .nav { display: none; }
+  .menu-toggle { display: grid; }
+}
+
+@media (max-width: 768px) {
+  .header-inner { padding: 0 var(--nike-gutter); height: 56px; }
+
+  .mobile-menu {
+    position: fixed;
+    inset: 56px 16px auto 16px;
+    z-index: 99;
+    padding: var(--nike-s-lg);
+    background: var(--nike-canvas);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border: 1px solid var(--nike-hairline);
+    border-radius: var(--nike-r-input);
+    box-shadow: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    opacity: 0;
+    transform: translateY(-8px);
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+
+  .mobile-menu.open { opacity: 1; transform: translateY(0); pointer-events: auto; }
+
+  .mobile-menu a {
+    padding: var(--nike-s-md) var(--nike-s-md);
+    border-radius: 0;
+    border-bottom: 1px solid var(--nike-hairline);
+    font-family: var(--nike-font-ui);
+    font-size: var(--nike-fs-md);
+    font-weight: 500;
+    color: var(--nike-ink);
+  }
+
+  .mobile-menu a:last-child { border-bottom: none; }
+  .mobile-menu a.active,
+  .mobile-menu a:hover { background: transparent; color: var(--nike-ink); }
+
+  .hero { min-height: 70vh; }
+  .hero-inner {
+    grid-template-columns: 1fr;
+    gap: var(--nike-s-lg);
+    padding: 80px 0 var(--nike-s-xl);
+  }
+  .hero-card { margin: 0; max-width: 100%; }
+
+  .form-row { grid-template-columns: 1fr; }
+  .form-card { padding: var(--nike-s-lg); }
+
+  .contacts-grid { grid-template-columns: 1fr; gap: var(--nike-s-xl); }
+
+  .footer-inner { grid-template-columns: 1fr 1fr; gap: var(--nike-s-xl); }
+
+  .gallery { grid-template-columns: 1fr 1fr; grid-auto-rows: 160px; }
+  .gallery-item:nth-child(1) { grid-row: span 1; }
+  .gallery-item:nth-child(4) { grid-column: span 1; }
+
+  .compare-row { grid-template-columns: 1fr 1fr; gap: var(--nike-s-md) var(--nike-s-sm); padding: var(--nike-s-lg) 0; }
+  .compare-row .label { grid-column: 1 / -1; margin-bottom: var(--nike-s-xs); font-size: var(--nike-fs-sm); }
+  .compare-row .cell  { font-size: var(--nike-fs-sm); }
+
+  .floating-widget { bottom: var(--nike-s-md); right: var(--nike-s-md); }
+  .widget-trigger   { width: 52px; height: 52px; }
+  .widget-menu      { min-width: 180px; }
+
+  .awards-row { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 480px) {
+  .footer-inner { grid-template-columns: 1fr; gap: var(--nike-s-lg); }
+  .hero h1 { font-size: 48px; }
+  .hero-actions { flex-direction: column; align-items: stretch; }
+  .hero-actions .btn { width: 100%; }
+  .btn-lg { padding: 12px 24px; }
+
+  .compare-row { grid-template-columns: 1fr; }
+  .compare-row .cell { text-align: left; }
+  .compare-row .label { font-size: var(--nike-fs-md); font-weight: 600; }
+  .compare-row .cell.featured::before { content: "▸ "; }
+
+  .awards-row { grid-template-columns: 1fr; }
+}
+
+/* ===== 19. FOCUS — Nike style (no glow) ===== */
+
+:focus-visible {
+  outline: 2px solid var(--nike-ink);
+  outline-offset: 2px;
+  border-radius: 0;
+}
+
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--nike-ink);
+  outline-offset: 2px;
+  border-radius: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .reveal { opacity: 1; transform: none; }
+}
+
+/* ===== 20. ВЕРТИКАЛЬНЫЙ РИТМ ДЛЯ ВНУТРЕННИХ HERO ===== */
+
+.hero.hero-inner--short { min-height: 60vh; }
+.hero.hero-inner--short .hero-inner { padding: 80px 0 var(--nike-s-xl); }
