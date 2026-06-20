@@ -385,7 +385,7 @@ img { max-width: 100%; display: block; }
 
 .hero {
   position: relative;
-  min-height: 80vh;
+  min-height: 88vh;
   padding: 0;
   display: flex;
   align-items: flex-end;
@@ -424,7 +424,7 @@ img { max-width: 100%; display: block; }
   grid-template-columns: 1.1fr 0.9fr;
   align-items: end;
   gap: 60px;
-  padding: 120px 0 var(--nike-s-section);
+  padding: 88px 0 40px;
   width: 100%;
   max-width: var(--nike-container);
   margin: 0 auto;
@@ -592,7 +592,7 @@ img { max-width: 100%; display: block; }
 @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
 /* ===== 7. HERO — фоновые фото по страницам ===== */
-body.home .hero-media       { background-image: url("../assets/hero-home.jpg"); }
+body.home .hero-media       { background-image: url("../assets/hero-piano.jpg"); }
 body.lessons .hero-media    { background-image: url("../assets/hero-lessons.jpg"); }
 body.teachers .hero-media   { background-image: url("../assets/hero-teachers.jpg"); }
 body.pricing .hero-media    { background-image: url("../assets/hero-pricing.jpg"); }
@@ -602,7 +602,7 @@ body.contacts .hero-media   { background-image: url("../assets/hero-contacts.jpg
    чтобы белый заголовок читался на любом фрагменте изображения.
    Композиция сдвинута вправо: пианино ближе к правому краю экрана. */
 body.home .hero-media {
-  background-position: 70% 35%;
+  background-position: 65% 50%;
 }
 body.home .hero-media::after {
   background: linear-gradient(90deg,
@@ -1779,11 +1779,11 @@ body.home .btn-primary:hover {
   .mobile-menu a.active,
   .mobile-menu a:hover { background: transparent; color: var(--nike-ink); }
 
-  .hero { min-height: 70vh; }
+  .hero { min-height: 75vh; }
   .hero-inner {
     grid-template-columns: 1fr;
     gap: var(--nike-s-lg);
-    padding: 80px 0 var(--nike-s-xl);
+    padding: 72px 0 var(--nike-s-xl);
   }
   .hero-card { margin: 0; max-width: 100%; }
 

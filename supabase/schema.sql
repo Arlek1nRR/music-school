@@ -41,13 +41,7 @@ create table if not exists public.teacher_consultation_requests (
 create index if not exists teacher_consultation_requests_created_at_idx
   on public.teacher_consultation_requests (created_at desc);
 
--- -------------------------------------------------------------------------
--- Row Level Security
---   - INSERT разрешён анонимам (для отправки форм с сайта).
---   - SELECT/UPDATE/DELETE — без политик для роли anon, поэтому anon
---     их не выполнит. Админ-операции делаются serverless-функцией
---     через service_role ключ, который обходит RLS.
--- -------------------------------------------------------------------------
+
 alter table public.trial_lesson_requests enable row level security;
 alter table public.teacher_consultation_requests enable row level security;
 
@@ -65,7 +59,3 @@ create policy "anon insert consultation"
   to anon
   with check (true);
 
--- Готово. После выполнения скрипта:
---   1) Создайте пользователя-админа в Authentication → Users → Add user.
---   2) Заполните .env (см. .env.example).
---   3) Задеплойте на Vercel.

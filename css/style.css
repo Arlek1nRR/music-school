@@ -2057,7 +2057,7 @@ a:focus-visible {
 
 @media (max-width: 1024px) {
   .section { padding: 80px 0; }
-  .hero { padding: 130px 0 60px; }
+  .hero { padding: 96px 0 48px; }
   .hero-inner { grid-template-columns: 1fr; gap: 50px; }
   .hero-wave { display: none; }
   .lesson-block { grid-template-columns: 1fr; gap: 32px; margin-bottom: 60px; }
@@ -2070,7 +2070,7 @@ a:focus-visible {
 @media (max-width: 768px) {
   :root { --gutter: 16px; }
   .section { padding: 60px 0; }
-  .hero { padding: 110px 0 40px; min-height: auto; }
+  .hero { padding: 84px 0 36px; min-height: auto; }
   .section-head { margin-bottom: 40px; }
 
   .nav { display: none; }
