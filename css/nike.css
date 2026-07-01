@@ -435,6 +435,8 @@ img { max-width: 100%; display: block; }
 .hero-content {
   color: var(--nike-on-primary);
   animation: none;
+  position: relative;
+  z-index: 4;
 }
 
 .hero h1 {
@@ -1554,6 +1556,26 @@ body.home .btn-primary:hover {
   transition: none;
 }
 
+/* Тёмный футер на главной — единая палитра */
+body.home .site-footer {
+  background: #0F0E1A;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.75);
+}
+body.home .footer-brand p,
+body.home .footer-col a,
+body.home .footer-bottom { color: rgba(255, 255, 255, 0.65); }
+body.home .footer-col h4,
+body.home .logo,
+body.home .footer-col li,
+body.home .site-footer a { color: #ffffff; }
+body.home .footer-col a:hover { color: rgba(255, 255, 255, 0.75); }
+body.home .footer-bottom { border-top-color: rgba(255, 255, 255, 0.10); }
+body.home .footer-socials .social-link {
+  background: rgba(255, 255, 255, 0.06);
+  color: #ffffff;
+}
+
 .footer-inner {
   display: grid;
   grid-template-columns: 1.4fr 1fr 1fr 1fr;
@@ -1853,3 +1875,396 @@ a:focus-visible {
 
 .hero.hero-inner--short { min-height: 60vh; }
 .hero.hero-inner--short .hero-inner { padding: 80px 0 var(--nike-s-xl); }
+
+/* ===================================================================
+   21. ГЛАВНАЯ — ПРОЗРАЧНЫЙ ХЕДЕР ПОВЕРХ ТЁМНОГО HERO + SCROLL-BLUR
+   Активен только на body.home, чтобы не затрагивать внутренние страницы
+   (у них hero короткий и хедер должен быть визуально отделён).
+   =================================================================== */
+
+/* Когда страница только загружена и юзер ещё вверху — хедер прозрачный,
+   текст и логотип — белые. Чтобы стиль применился сразу, опираемся на
+   состояние "НЕ scrolled" у .header-inner. JS добавит/снимет .scrolled. */
+body.home .site-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: transparent;
+  box-shadow: none;
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+body.home .header-inner {
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border: none;
+  box-shadow: none;
+  transition:
+    background 0.3s ease,
+    backdrop-filter 0.3s ease,
+    -webkit-backdrop-filter 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease,
+    color 0.3s ease;
+}
+
+/* После прокрутки >80px JS добавляет класс .scrolled → хедер получает
+   полупрозрачный белый фон с blur, тонкую тень и тонкую нижнюю границу. */
+body.home .header-inner.scrolled {
+  background: rgba(255, 255, 255, 0.85);
+  -webkit-backdrop-filter: blur(12px) saturate(160%);
+  backdrop-filter: blur(12px) saturate(160%);
+  border-bottom: 1px solid var(--nike-hairline);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+}
+
+/* Логотип и nav по умолчанию — белые (на тёмном hero). При скролле
+   переключаем на тёмный — переход наследуется из transition в .logo/.nav a. */
+body.home .logo,
+body.home .nav a,
+body.home .menu-toggle {
+  color: #ffffff;
+  transition: color 0.3s ease;
+}
+
+body.home .nav a:hover { color: rgba(255, 255, 255, 0.75); }
+
+/* Активный пункт меню на главной: вместо тёмной полоски — светлая,
+   чтобы контрастировал с тёмным hero. */
+body.home .nav a.active::after {
+  background: #ffffff;
+}
+
+body.home .nav a.active { color: #ffffff; }
+
+/* После скролла — логотип и ссылки снова тёмные, фон светлый */
+body.home .header-inner.scrolled .logo,
+body.home .header-inner.scrolled .nav a,
+body.home .header-inner.scrolled .menu-toggle {
+  color: var(--nike-ink);
+}
+
+body.home .header-inner.scrolled .nav a:hover { color: var(--nike-mute); }
+body.home .header-inner.scrolled .nav a.active { color: var(--nike-ink); }
+body.home .header-inner.scrolled .nav a.active::after { background: var(--nike-ink); }
+
+/* Лого-марка: на тёмном hero — белый квадрат с чёрным знаком,
+   на скролле — стандартный чёрный квадрат с белым знаком (как в nike.css).
+   Оставляем базовый стиль, но инвертируем цвета когда хедер прозрачный. */
+body.home .logo-mark {
+  background: #ffffff;
+  color: var(--nike-ink);
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+body.home .header-inner.scrolled .logo-mark {
+  background: var(--nike-ink);
+  color: var(--nike-on-primary);
+}
+
+/* Кнопка "Записаться" в хедере — белая на тёмном, чёрная после скролла */
+body.home .header-inner .header-actions .btn-primary,
+body.home .header-inner .header-actions a.btn-primary {
+  background: #ffffff !important;
+  color: var(--nike-ink) !important;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+body.home .header-inner .header-actions .btn-primary:hover {
+  background: rgba(255, 255, 255, 0.85) !important;
+}
+
+body.home .header-inner.scrolled .header-actions .btn-primary,
+body.home .header-inner.scrolled .header-actions a.btn-primary {
+  background: var(--nike-ink) !important;
+  color: var(--nike-on-primary) !important;
+}
+
+body.home .header-inner.scrolled .header-actions .btn-primary:hover {
+  background: var(--nike-charcoal) !important;
+}
+
+/* Мобильное меню на главной: белое на тёмном hero, чёрное после скролла.
+   (На мобильном nav скрыт, открывается через .open) */
+body.home .mobile-menu {
+  background: rgba(255, 255, 255, 0.95);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+}
+
+body.home .mobile-menu a { color: var(--nike-ink); }
+body.home .mobile-menu a.active::after { background: var(--nike-ink); }
+
+/* ===================================================================
+   21.5 ГЛАВНАЯ — ОБЩИЙ ТЁМНЫЙ ФОН СТРАНИЦЫ
+   Все секции ниже hero делят один тёмный фон (#0F0E1A),
+   поэтому границы между ними исчезают и hero плавно «растворяется».
+   =================================================================== */
+
+body.home {
+  background: #0F0E1A;
+  color: #ffffff;
+}
+
+/* Плавный градиентный переход от hero к следующей секции:
+   hero::after рисует мягкий градиент поверх фото (z-index 1),
+   между hero-media (0) и hero-content (2) — плавно "растворяет"
+   фото пианино в общий тёмный фон #0F0E1A внизу. */
+body.home .hero::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 220px;
+  background: linear-gradient(180deg,
+              rgba(15, 14, 26, 0) 0%,
+              rgba(15, 14, 26, 0.65) 65%,
+              #0F0E1A 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+body.home .hero {
+  padding-bottom: 0;
+}
+
+/* Первая секция после hero (#lessons) — заподлицо с общим фоном */
+body.home #lessons {
+  background: transparent;
+  color: #ffffff;
+  padding-top: var(--nike-s-section);
+}
+
+body.home #lessons .section-head h2 { color: #ffffff; }
+body.home #lessons .section-head p  { color: rgba(255, 255, 255, 0.65); }
+body.home #lessons .section-head .eyebrow {
+  color: rgba(255, 255, 255, 0.65);
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+/* Сброс стандартного nike.css-стиля карточек на главной в этой секции:
+   на тёмном фоне нам нужно не "белое с тенью", а "стекло поверх тёмного" */
+body.home #lessons .glass-card {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  box-shadow: none;
+  transition: background 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+}
+
+body.home #lessons .glass-card:hover {
+  background: rgba(255, 255, 255, 0.10);
+  border-color: rgba(255, 255, 255, 0.22);
+  transform: translateY(-2px);
+}
+
+body.home #lessons .glass-card h3 { color: #ffffff; }
+body.home #lessons .glass-card p  { color: rgba(255, 255, 255, 0.65); }
+
+body.home #lessons .card-icon {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  border-radius: 14px;
+}
+
+body.home #lessons .card-icon svg { color: #ffffff; }
+
+body.home #lessons .card-link { color: #ffffff; }
+body.home #lessons .card-link:hover { color: rgba(255, 255, 255, 0.75); }
+
+/* Бейджи внутри карточек — адаптация под тёмный фон */
+body.home #lessons .tag {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.75);
+}
+
+body.home #lessons .tag.tag-accent {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.25);
+  color: #ffffff;
+}
+
+/* ===================================================================
+   23. ГЛАВНАЯ — ПРЕПОДАВАТЕЛИ
+   Переделываем в единый стиль с карточками направлений:
+   тёмный фон с лёгким стеклянным эффектом, единая палитра.
+   =================================================================== */
+
+/* Секция — тёмный фон без разрыва с #lessons */
+body.home #teachers {
+  background: transparent;
+  color: #ffffff;
+}
+
+body.home #teachers .section-head h2 { color: #ffffff; }
+body.home #teachers .section-head p  { color: rgba(255, 255, 255, 0.65); }
+body.home #teachers .section-head .eyebrow {
+  color: rgba(255, 255, 255, 0.65);
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+/* Карточка преподавателя = стекло на тёмном */
+body.home #teachers .glass-card.teacher-card {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: var(--nike-s-lg);
+  box-shadow: none;
+  transition: background 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
+}
+
+body.home #teachers .glass-card.teacher-card:hover {
+  background: rgba(255, 255, 255, 0.10);
+  border-color: rgba(255, 255, 255, 0.22);
+  transform: translateY(-2px);
+}
+
+body.home #teachers .teacher-card h3 { color: #ffffff; }
+body.home #teachers .teacher-role { color: rgba(255, 255, 255, 0.55); }
+
+/* Фото-плашка: единый тёмный стеклянный фон, инициалы — белые */
+body.home #teachers .teacher-photo {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  font-weight: 300;
+  letter-spacing: 0.02em;
+  border-radius: 16px;
+}
+
+/* Разделители внутри карточки */
+body.home #teachers .teacher-bio li {
+  border-top-color: rgba(255, 255, 255, 0.10);
+  color: rgba(255, 255, 255, 0.65);
+}
+body.home #teachers .teacher-bio li:first-child {
+  border-top-color: rgba(255, 255, 255, 0.10);
+}
+body.home #teachers .teacher-quote {
+  color: #ffffff;
+  border-top-color: rgba(255, 255, 255, 0.12);
+}
+
+
+/* На внутренней странице /teachers.html — все 4 карточки получают
+   единый стиль "градиентные аватарки" (пункт 3 задачи — общий сценарий).
+   Чтобы все четыре выглядели гармонично, чередуем четыре заранее
+   подготовленных градиента. */
+body.teachers .teacher-card:nth-child(1) .teacher-photo {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: #ffffff;
+  font-weight: 300;
+}
+body.teachers .teacher-card:nth-child(2) .teacher-photo {
+  background: linear-gradient(135deg, #f7971e, #ffd200);
+  color: var(--nike-ink);
+  font-weight: 300;
+}
+body.teachers .teacher-card:nth-child(3) .teacher-photo {
+  background: linear-gradient(135deg, #4facfe, #00f2fe);
+  color: #ffffff;
+  font-weight: 300;
+}
+body.teachers .teacher-card:nth-child(4) .teacher-photo {
+  background: linear-gradient(135deg, #f093fb, #f5576c);
+  color: #ffffff;
+  font-weight: 300;
+}
+
+/* ===================================================================
+   25. ГЛАВНАЯ — ФОРМА: ВИЗУАЛЬНЫЙ ВЕС, КНОПКА
+   Тёмный стеклянный блок формы в единой палитре главной страницы.
+   =================================================================== */
+
+body.home .form-card {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 40px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  box-shadow: none;
+}
+
+/* Тёмный фон секции формы — единый со страницей */
+body.home #trial {
+  background: transparent;
+  color: #ffffff;
+}
+
+body.home #trial .section-head h2 { color: #ffffff; }
+body.home #trial .section-head p  { color: rgba(255, 255, 255, 0.65); }
+body.home #trial .section-head .eyebrow {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.65);
+}
+
+/* Подписи полей — светлые */
+body.home .form-card .field label,
+body.home .form-card .form-note { color: rgba(255, 255, 255, 0.75); }
+
+/* Поля ввода: тёмные с лёгкой обводкой, при фокусе — светлая + glow */
+body.home .form-card .field input,
+body.home .form-card .field select,
+body.home .form-card .field textarea,
+body.home .form-card .select-trigger {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1.5px solid rgba(255, 255, 255, 0.14);
+  color: #ffffff;
+  border-radius: 12px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+body.home .form-card .field input:focus,
+body.home .form-card .field select:focus,
+body.home .form-card .field textarea:focus,
+body.home .form-card .select.open .select-trigger {
+  outline: none;
+  border-color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.08);
+}
+
+body.home .form-card .field input::placeholder,
+body.home .form-card .field textarea::placeholder,
+body.home .form-card .select-trigger .select-label.placeholder {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+/* Кнопка "Записаться на пробный урок" — белая с тёмным текстом (контраст) */
+body.home .form-card button[type="submit"].btn,
+body.home .form-card .btn-primary {
+  background: #ffffff !important;
+  color: #0F0E1A !important;
+  border-radius: 12px;
+  height: 56px;
+  font-weight: 500;
+  transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: none;
+}
+
+body.home .form-card button[type="submit"].btn:hover,
+body.home .form-card .btn-primary:hover {
+  background: rgba(255, 255, 255, 0.88) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+}
+
+body.home .form-card button[type="submit"].btn:active,
+body.home .form-card .btn-primary:active {
+  transform: translateY(0);
+}

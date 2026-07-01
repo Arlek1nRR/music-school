@@ -39,10 +39,14 @@
   });
 
   // ---------- HEADER: эффект при прокрутке ----------
+  // С 80px (а не 30) — хедер плавно появляется, не "мигает" на коротких
+  // отскоках вверх, и хватает времени, чтобы юзер прокрутил мимо
+  // верхней "шапки" hero. Прозрачный хедер на главной (см. body.home в nike.css)
+  // подхватывает состояние .scrolled, меняя фон/цвет/тень.
   const header = document.querySelector('.header-inner');
   if (header) {
     const onScroll = () => {
-      if (window.scrollY > 30) header.classList.add('scrolled');
+      if (window.scrollY > 80) header.classList.add('scrolled');
       else header.classList.remove('scrolled');
     };
     window.addEventListener('scroll', onScroll, { passive: true });
