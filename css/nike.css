@@ -14,11 +14,19 @@
   --nike-ash:            #4b4b4d;
   --nike-mute:           #707072;
   --nike-stone:          #9e9ea0;
-  --nike-hairline:       #cacacb;
-  --nike-hairline-soft:  #e5e5e5;
+  --nike-hairline:       #e5e5e5;
+  --nike-hairline-soft:  #f0f0f0;
   --nike-sale:           #d30005;
   --nike-sale-deep:      #780700;
   --nike-success:        #007d48;
+
+  /* Принудительный светлый scroll-header.
+     style.css определяет --header-bg-scrolled: rgba(15, 14, 26, 0.75) для тёмной
+     и rgba(250, 243, 228, 0.85) для светлой темы. Поскольку сайт light-first и
+     скролл-хедер должен оставаться светлым в любой теме, переопределяем токен
+     на уровне :root в nike.css. nike.css загружается ПОСЛЕ style.css, поэтому
+     его :root-переменные выигрывают cascade для всех последующих правил. */
+  --header-bg-scrolled: rgba(255, 255, 255, 0.92);
 
   /* Шрифты */
   --nike-font-ui:      'Inter', 'Helvetica Neue', Arial, sans-serif;
@@ -79,7 +87,12 @@ body {
   position: relative;
 }
 
-/* Гасим атмосферный фон liquid-glass (блобы, сетка, drift) */
+/* Гасим атмосферный фон liquid-glass (блобы, сетка, drift) — ГЛОБАЛЬНО.
+   Раньше правило стояло только под body.home, и на внутренних страницах
+   (lessons / teachers / pricing / contacts) оставались градиентные блобы
+   и дрифт-фон из style.css, из-за чего между секциями возникал видимый разрыв.
+   Сайт light-first с фиксированной палитрой #ffffff / #f7f7f7 — атмосферный фон
+   не нужен ни на одной странице. */
 body::before,
 body::after { display: none !important; }
 
@@ -358,14 +371,14 @@ img { max-width: 100%; display: block; }
 }
 
 .btn-primary {
-  background: var(--nike-canvas);
-  color: var(--nike-ink);
+  background: var(--nike-ink);
+  color: var(--nike-on-primary);
   box-shadow: none;
 }
 
 .btn-primary::before { display: none; }
 
-.btn-primary:hover { background: var(--nike-soft-cloud); transform: none; }
+.btn-primary:hover { background: #333333; transform: none; }
 .btn-primary:active { transform: scale(0.5); opacity: 0.5; }
 
 .btn-ghost {
@@ -593,25 +606,36 @@ img { max-width: 100%; display: block; }
 
 @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
-/* ===== 7. HERO — фоновые фото по страницам ===== */
-body.home .hero-media       { background-image: url("../assets/hero-piano.jpg"); }
-body.lessons .hero-media    { background-image: url("../assets/hero-lessons.jpg"); }
-body.teachers .hero-media   { background-image: url("../assets/hero-teachers.jpg"); }
-body.pricing .hero-media    { background-image: url("../assets/hero-pricing.jpg"); }
-body.contacts .hero-media   { background-image: url("../assets/hero-contacts.jpg"); }
+/* ===== 7. HERO — оформление по страницам ===== */
 
-/* Главная: фото пианино за надписью «Играй. Пой. Услышь…» — усиливаем затемнение слева,
-   чтобы белый заголовок читался на любом фрагменте изображения.
-   Композиция сдвинута вправо: пианино ближе к правому краю экрана. */
-body.home .hero-media {
-  background-position: 65% 50%;
-}
+/* Главная: светлый hero, мягкий soft-cloud фон, белая hero-карточка */
+body.home .hero { background: #ffffff; }
+body.home .hero-media { background-image: none; background-color: #f7f7f7; }
 body.home .hero-media::after {
-  background: linear-gradient(90deg,
-              rgba(0,0,0,0.78) 0%,
-              rgba(0,0,0,0.55) 45%,
-              rgba(0,0,0,0.15) 100%),
-             linear-gradient(180deg, rgba(0,0,0,0) 50%, rgba(0,0,0,0.45) 100%);
+  background: none;
+}
+
+/* Внутренние страницы: тёмный hero как акцент-блок (#111111) с белым текстом.
+   Без фоновых фото — solid dark color создаёт сильный контраст со светлым телом. */
+body.lessons .hero,
+body.teachers .hero,
+body.pricing .hero,
+body.contacts .hero {
+  background: #111111;
+  color: #ffffff;
+}
+body.lessons .hero-media,
+body.teachers .hero-media,
+body.pricing .hero-media,
+body.contacts .hero-media {
+  background-image: none;
+  background-color: #111111;
+}
+body.lessons .hero-media::after,
+body.teachers .hero-media::after,
+body.pricing .hero-media::after,
+body.contacts .hero-media::after {
+  background: none;
 }
 
 /* Главная: правая колонка с карточкой «Ближайшее событие» удалена из разметки —
@@ -619,6 +643,18 @@ body.home .hero-media::after {
 body.home .hero-inner {
   grid-template-columns: 1fr;
 }
+
+/* Главная: тёмный текст на светлом hero */
+body.home .hero h1,
+body.home .hero h1 .accent,
+body.home .hero-sub,
+body.home .hero-stat .num {
+  color: #111111 !important;
+  -webkit-text-fill-color: #111111 !important;
+  background: none !important;
+  background-image: none !important;
+}
+body.home .hero-stat .label { color: #999999 !important; }
 
 /* Главная: заголовок «Играй. Пой. Услышь музыку в себе.» — Instrument Serif Regular.
    У этого шрифта нет жирных начертаний, поэтому держим font-weight: 400
@@ -631,22 +667,20 @@ body.home .hero h1 {
   text-transform: none;
 }
 
-/* Главная: кнопка-CTA — белый фон + тёмный текст. Привязка к body.home
-   поднимает специфичность выше, чем у .btn-primary в style.css, чтобы
-   градиентный фон и яркие hover-эффекты точно не перебивали новый стиль. */
+/* Главная: кнопка-CTA — чёрный фон + белый текст (light-theme primary) */
 body.home .btn-primary,
 body.home a.btn-primary,
 body.home .hero .btn-primary {
-  background: var(--nike-canvas) !important;
-  color: var(--nike-ink) !important;
+  background: #111111 !important;
+  color: #ffffff !important;
   box-shadow: none !important;
   transform: none !important;
 }
 body.home .btn-primary::before { display: none !important; }
 body.home .btn-primary:hover {
-  background: var(--nike-soft-cloud) !important;
-  transform: none !important;
-  box-shadow: none !important;
+  background: #333333 !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12) !important;
 }
 
 /* ===== 8. КАРТОЧКИ (product-card) ===== */
@@ -657,10 +691,10 @@ body.home .btn-primary:hover {
   background: var(--nike-canvas);
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
-  border: none;
-  border-radius: 0;
+  border: 1px solid #e5e5e5;
+  border-radius: 16px;
   box-shadow: none;
-  transition: background 0.2s ease;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.3s ease;
   overflow: hidden;
   animation: none;
   display: flex;
@@ -670,9 +704,9 @@ body.home .btn-primary:hover {
 .glass-card::before { display: none; }
 
 .glass-card:hover {
-  transform: none;
+  transform: translateY(-4px);
   background: var(--nike-canvas);
-  border: none;
+  border-color: #111111;
   box-shadow: none;
 }
 
@@ -684,9 +718,9 @@ body.home .btn-primary:hover {
   height: auto;
   display: grid;
   place-items: center;
-  background: var(--nike-soft-cloud);
-  border: none;
-  border-radius: 0;
+  background: #f7f7f7;
+  border: 1px solid #e5e5e5;
+  border-radius: 14px;
   margin-bottom: var(--nike-s-md);
   color: var(--nike-ink);
   position: relative;
@@ -799,7 +833,7 @@ body.home .btn-primary:hover {
   font-size: 64px;
   font-weight: 500;
   color: var(--nike-ink);
-  border: none;
+  border: 1px solid #e5e5e5;
   box-shadow: none;
   transition: none;
   text-transform: uppercase;
@@ -886,9 +920,9 @@ body.home .btn-primary:hover {
 .lesson-visual {
   position: relative;
   aspect-ratio: 4 / 3;
-  background: var(--nike-soft-cloud);
-  border: none;
-  border-radius: 0;
+  background: #f7f7f7;
+  border: 1px solid #e5e5e5;
+  border-radius: 16px;
   display: grid;
   place-items: center;
   overflow: hidden;
@@ -1002,28 +1036,32 @@ body.home .btn-primary:hover {
      длинных подписей в первой колонке и балансирует значения. */
   grid-template-columns: 1.4fr 1fr 1fr;
   align-items: center;
-  padding: 20px 16px;
+  padding: 28px 24px;
   border-top: 1px solid var(--nike-hairline);
   transition: background 0.2s ease;
-  min-height: auto;
+  min-height: 72px;
   line-height: 1.5;
 }
 
 .compare-row.four { grid-template-columns: 1.4fr 1fr 1.15fr 1.3fr; }
 .compare-row.five { grid-template-columns: 1.5fr 1fr 1fr 1fr 1.1fr; }
 
+/* Третья таблица (section СРАВНЕНИЕ) использует 4 колонки без класса .four —
+   применяем ту же сетку, чтобы featured-колонка не уезжала в первый ряд */
+body.pricing .section:has(> .container > .compare) .compare-row { grid-template-columns: 1.4fr 1fr 1.15fr 1.3fr; }
+
 .compare-row:first-child { border-top: 1px solid var(--nike-hairline); }
 .compare-row.head { background: transparent; }
 .compare-row:hover:not(.head) { background: var(--nike-soft-cloud); }
 
 /* Чередование строк для читаемости (применяется к не-заголовочным строкам) */
-.compare-row:not(.head):nth-child(even) { background: rgba(0, 0, 0, 0.018); }
-.compare-row:not(.head):hover { background: var(--nike-soft-cloud); }
+.compare-row:not(.head):nth-child(odd) { background: #fafafa; }
+.compare-row:not(.head):hover { background: #f0f0f0; }
 
 .compare-row .label,
 .compare-row .cell {
   font-family: var(--nike-font-ui);
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 400;
   color: var(--nike-ink);
   line-height: 1.5;
@@ -1044,12 +1082,12 @@ body.home .btn-primary:hover {
 .compare-row.head .label,
 .compare-row.head .cell {
   font-size: 11px;
-  font-weight: 400;
+  font-weight: 500;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--nike-mute);
   font-family: var(--nike-font-ui);
-  padding-bottom: 12px;
+  padding-bottom: 16px;
   line-height: 1.4;
 }
 
@@ -1057,6 +1095,8 @@ body.home .btn-primary:hover {
   color: var(--nike-ink);
   font-weight: 600;
   position: relative;
+  background: rgba(0, 0, 0, 0.03);
+  box-shadow: inset 2px 0 0 0 #111111;
 }
 
 .compare-row .cell .badge {
@@ -1140,8 +1180,8 @@ body.home .btn-primary:hover {
   flex-shrink: 0;
   display: grid;
   place-items: center;
-  background: var(--nike-soft-cloud);
-  border: none;
+  background: #f7f7f7;
+  border: 1px solid #e5e5e5;
   border-radius: var(--nike-r-circle);
   color: var(--nike-ink);
 }
@@ -1169,12 +1209,12 @@ body.home .btn-primary:hover {
   width: 100%;
   aspect-ratio: 16 / 10;
   margin-top: var(--nike-s-xl);
-  background: var(--nike-soft-cloud);
-  border: none;
-  border-radius: 0;
+  background: #f7f7f7;
+  border: 1px solid #e5e5e5;
+  border-radius: 16px;
   display: grid;
   place-items: center;
-  color: var(--nike-mute);
+  color: #999999;
   font-size: var(--nike-fs-sm);
   position: relative;
   overflow: hidden;
@@ -1190,9 +1230,9 @@ body.home .btn-primary:hover {
 .review-card {
   position: relative;
   padding: var(--nike-s-xl);
-  background: var(--nike-soft-cloud);
-  border: none;
-  border-radius: 0;
+  background: #ffffff;
+  border: 1px solid #e5e5e5;
+  border-radius: 16px;
 }
 
 .review-card .review-text {
@@ -1245,12 +1285,12 @@ body.home .btn-primary:hover {
 .form-card {
   max-width: 100%;
   margin: 0;
-  padding: var(--nike-s-xl);
-  background: var(--nike-soft-cloud);
+  padding: 40px;
+  background: #f7f7f7;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
-  border: none;
-  border-radius: 0;
+  border: 1px solid #e5e5e5;
+  border-radius: 20px;
   box-shadow: none;
   transition: none;
 }
@@ -1267,11 +1307,11 @@ body.home .btn-primary:hover {
 .field label {
   display: block;
   font-family: var(--nike-font-ui);
-  font-size: var(--nike-fs-xs);
+  font-size: 11px;
   font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--nike-mute);
+  letter-spacing: 0.1em;
+  color: #999999;
   margin-bottom: var(--nike-s-sm);
 }
 
@@ -1280,16 +1320,15 @@ body.home .btn-primary:hover {
 .field textarea {
   width: 100%;
   padding: 12px 16px;
-  background: var(--nike-canvas);
-  border: none;
-  border-bottom: 1px solid var(--nike-hairline);
-  border-radius: 0;
-  color: var(--nike-ink);
+  background: #ffffff;
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
+  color: #111111;
   font-family: var(--nike-font-ui);
   font-size: var(--nike-fs-md);
-  font-weight: 500;
+  font-weight: 400;
   height: 48px;
-  transition: border-color 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
   appearance: none;
   -webkit-appearance: none;
 }
@@ -1297,19 +1336,19 @@ body.home .btn-primary:hover {
 .field textarea { min-height: 120px; resize: vertical; height: auto; }
 
 .field input::placeholder,
-.field textarea::placeholder { color: var(--nike-mute); }
+.field textarea::placeholder { color: #999999; }
 
 .field input:hover,
 .field select:hover,
-.field textarea:hover { border-bottom-color: var(--nike-ink); }
+.field textarea:hover { border-color: #111111; }
 
 .field input:focus,
 .field select:focus,
 .field textarea:focus {
   outline: none;
-  border-bottom-color: var(--nike-ink);
-  background: var(--nike-canvas);
-  box-shadow: none;
+  border-color: #111111;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(17, 17, 17, 0.06);
 }
 
 /* Кастомный селект (Направление) — flat pill-input */
@@ -1323,28 +1362,27 @@ body.home .btn-primary:hover {
   gap: var(--nike-s-md);
   padding: 12px 16px;
   padding-right: 48px;
-  background: var(--nike-canvas);
+  background: #ffffff;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
-  border: none;
-  border-bottom: 1px solid var(--nike-hairline);
-  border-radius: 0;
-  color: var(--nike-ink);
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
+  color: #111111;
   font-family: var(--nike-font-ui);
   font-size: var(--nike-fs-md);
-  font-weight: 500;
+  font-weight: 400;
   text-align: left;
   cursor: pointer;
   height: 48px;
-  transition: border-color 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
   position: relative;
 }
 
-.select-trigger:hover { border-bottom-color: var(--nike-ink); }
+.select-trigger:hover { border-color: #111111; }
 
 .select.open .select-trigger {
-  border-bottom-color: var(--nike-ink);
-  box-shadow: none;
+  border-color: #111111;
+  box-shadow: 0 0 0 3px rgba(17, 17, 17, 0.06);
 }
 
 .select-trigger .select-label {
@@ -1386,10 +1424,10 @@ body.home .btn-primary:hover {
   padding: var(--nike-s-sm);
   margin: 0;
   list-style: none;
-  background: var(--nike-canvas);
-  border: 1px solid var(--nike-hairline);
-  border-radius: var(--nike-r-input);
-  box-shadow: none;
+  background: #ffffff;
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
   opacity: 0;
   transform: translateY(-6px);
   transform-origin: top center;
@@ -1419,16 +1457,16 @@ body.home .btn-primary:hover {
 .select-option:hover,
 .select-option:focus-visible {
   outline: none;
-  background: var(--nike-soft-cloud);
+  background: #f7f7f7;
   border: none;
-  color: var(--nike-ink);
+  color: #111111;
 }
 
 .select-option.is-active,
 .select-option.is-selected {
-  background: var(--nike-soft-cloud);
+  background: #f7f7f7;
   border: none;
-  color: var(--nike-ink);
+  color: #111111;
   font-weight: 600;
 }
 
@@ -1450,7 +1488,7 @@ body.home .btn-primary:hover {
   text-align: left;
   font-family: var(--nike-font-ui);
   font-size: var(--nike-fs-xs);
-  color: var(--nike-mute);
+  color: #999999;
   margin-top: var(--nike-s-md);
   line-height: var(--nike-lh-body);
 }
@@ -1467,10 +1505,10 @@ body.home .btn-primary:hover {
 
 .gallery-item {
   position: relative;
-  border-radius: 0;
+  border-radius: 16px;
   overflow: hidden;
-  background: var(--nike-soft-cloud);
-  border: none;
+  background: #f7f7f7;
+  border: 1px solid #e5e5e5;
   display: grid;
   place-items: center;
   font-size: var(--nike-fs-sm);
@@ -1562,27 +1600,32 @@ body.home .btn-primary:hover {
 .site-footer {
   margin-top: var(--nike-s-section);
   padding: var(--nike-s-xl) 0 var(--nike-s-xl);
-  background: var(--nike-canvas);
-  border-top: 1px solid var(--nike-hairline);
+  background: #111111;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
   transition: none;
+  color: rgba(255, 255, 255, 0.7);
 }
 
-/* Тёмный футер на главной — единая палитра */
-body.home .site-footer {
-  background: #0F0E1A;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.75);
-}
 body.home .footer-brand p,
 body.home .footer-col a,
-body.home .footer-bottom { color: rgba(255, 255, 255, 0.75); }
+body.home .footer-bottom,
+.footer-brand p,
+.footer-col a,
+.footer-bottom { color: rgba(255, 255, 255, 0.7); }
+
 body.home .footer-col h4,
 body.home .logo,
 body.home .footer-col li,
-body.home .site-footer a { color: #ffffff; }
-body.home .footer-col a:hover { color: rgba(255, 255, 255, 0.75); }
-body.home .footer-bottom { border-top-color: rgba(255, 255, 255, 0.10); }
-body.home .footer-socials .social-link {
+body.home .site-footer a,
+.footer-col h4,
+.footer-col li,
+.site-footer a { color: #ffffff; }
+
+.footer-col a:hover { color: rgba(255, 255, 255, 0.7); }
+
+.footer-bottom { border-top-color: rgba(255, 255, 255, 0.1); }
+
+.footer-socials .social-link {
   background: rgba(255, 255, 255, 0.06);
   color: #ffffff;
 }
@@ -1599,7 +1642,7 @@ body.home .footer-socials .social-link {
   margin: var(--nike-s-md) 0 var(--nike-s-lg);
   font-size: var(--nike-fs-sm);
   line-height: var(--nike-lh-body);
-  color: var(--nike-mute);
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .footer-col h4 {
@@ -1607,30 +1650,30 @@ body.home .footer-socials .social-link {
   font-size: var(--nike-fs-md);
   letter-spacing: 0;
   text-transform: none;
-  color: var(--nike-ink);
+  color: #ffffff;
   margin-bottom: var(--nike-s-md);
   font-weight: 600;
 }
 
 .footer-col ul { list-style: none; padding: 0; margin: 0; }
-.footer-col li { margin-bottom: var(--nike-s-sm); line-height: var(--nike-lh-body); }
+.footer-col li { margin-bottom: var(--nike-s-sm); line-height: var(--nike-lh-body); color: #ffffff; }
 .footer-col a {
-  color: var(--nike-mute);
+  color: rgba(255, 255, 255, 0.7);
   font-size: var(--nike-fs-sm);
   transition: color 0.2s ease;
   text-decoration: none;
 }
-.footer-col a:hover { color: var(--nike-ink); }
+.footer-col a:hover { color: #ffffff; }
 
 .footer-bottom {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding-top: var(--nike-s-md);
-  border-top: 1px solid var(--nike-hairline);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
   font-family: var(--nike-font-ui);
   font-size: var(--nike-fs-xxs);
-  color: var(--nike-mute);
+  color: rgba(255, 255, 255, 0.4);
   flex-wrap: wrap;
   gap: var(--nike-s-sm);
   letter-spacing: 0.05em;
@@ -1643,17 +1686,17 @@ body.home .footer-socials .social-link {
   height: 40px;
   display: grid;
   place-items: center;
-  background: var(--nike-soft-cloud);
-  border: none;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: var(--nike-r-circle);
-  color: var(--nike-ink);
+  color: #ffffff;
   transition: background 0.2s ease;
 }
 .footer-socials .social-link:hover {
-  background: var(--nike-hairline);
-  color: var(--nike-ink);
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
   transform: none;
-  border: none;
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
 /* ===== 16. ПЛАВАЮЩИЙ ВИДЖЕТ ===== */
@@ -1696,12 +1739,12 @@ body.home .footer-socials .social-link {
   flex-direction: column;
   gap: var(--nike-s-sm);
   padding: var(--nike-s-sm);
-  background: var(--nike-canvas);
+  background: #ffffff;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
-  border: 1px solid var(--nike-hairline);
-  border-radius: var(--nike-r-input);
-  box-shadow: none;
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
   opacity: 0;
   transform: translateY(8px);
   pointer-events: none;
@@ -1716,10 +1759,10 @@ body.home .footer-socials .social-link {
   align-items: center;
   gap: var(--nike-s-md);
   padding: 12px 16px;
-  background: var(--nike-soft-cloud);
+  background: #f7f7f7;
   border: none;
-  border-radius: 0;
-  color: var(--nike-ink);
+  border-radius: 8px;
+  color: #111111;
   font-family: var(--nike-font-ui);
   font-size: var(--nike-fs-sm);
   font-weight: 500;
@@ -1729,7 +1772,7 @@ body.home .footer-socials .social-link {
 }
 
 .widget-item:hover {
-  background: var(--nike-hairline);
+  background: #e5e5e5;
   border: none;
   transform: none;
 }
@@ -1893,9 +1936,9 @@ a:focus-visible {
    (у них hero короткий и хедер должен быть визуально отделён).
    =================================================================== */
 
-/* Когда страница только загружена и юзер ещё вверху — хедер прозрачный,
-   текст и логотип — белые. Чтобы стиль применился сразу, опираемся на
-   состояние "НЕ scrolled" у .header-inner. JS добавит/снимет .scrolled. */
+/* Когда страница только загружена и юзер ещё вверху — хедер остаётся
+   на светлом фоне (фон прозрачный поверх белого hero), текст и логотип —
+   чёрные. JS добавит/снимет .scrolled. */
 body.home .site-header {
   position: fixed;
   top: 0;
@@ -1922,124 +1965,118 @@ body.home .header-inner {
 }
 
 /* После прокрутки >80px JS добавляет класс .scrolled → хедер получает
-   полупрозрачный тёмный фон с blur, тонкую нижнюю границу. Тёмный
-   скролл-фон — единый стиль со всеми страницами (был белый — исправлено,
-   чтобы не разрывать тёмную тему). */
+   полупрозрачный белый фон с blur, тонкую нижнюю границу. Светлый
+   скролл-фон — единый стиль со всеми страницами. */
 body.home .header-inner.scrolled {
-  background: rgba(15, 15, 15, 0.92);
-  -webkit-backdrop-filter: blur(16px) saturate(160%);
-  backdrop-filter: blur(16px) saturate(160%);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 1px 24px rgba(0, 0, 0, 0.4);
+  background: rgba(255, 255, 255, 0.92);
+  -webkit-backdrop-filter: blur(12px) saturate(160%);
+  backdrop-filter: blur(12px) saturate(160%);
+  border-bottom: 1px solid #e5e5e5;
+  box-shadow: 0 1px 12px rgba(0, 0, 0, 0.04);
 }
 
-/* Логотип и nav по умолчанию — белые (на тёмном hero). При скролле
-   остаются белыми (на тёмном фоне) — переход наследуется из transition
-   в .logo/.nav a. */
+/* Логотип и nav по умолчанию — чёрные (на светлом hero). При скролле
+   остаются чёрными (на светлом фоне). */
 body.home .logo,
 body.home .nav a,
 body.home .menu-toggle {
-  color: #ffffff;
+  color: #111111;
   transition: color 0.3s ease;
 }
 
-body.home .nav a:hover { color: rgba(255, 255, 255, 0.75); }
+body.home .nav a:hover { color: #555555; }
 
-/* Активный пункт меню на главной: светлая полоска под активной ссылкой,
-   чтобы контрастировала с тёмным hero и тёмным скролл-фоном. */
+/* Активный пункт меню на главной: чёрная полоска под активной ссылкой,
+   чтобы контрастировала со светлым hero и светлым скролл-фоном. */
 body.home .nav a.active::after {
-  background: #ffffff;
+  background: #111111;
 }
 
-body.home .nav a.active { color: #ffffff; }
+body.home .nav a.active { color: #111111; }
 
-/* После скролла — логотип и ссылки остаются белыми (фон тёмный) */
+/* После скролла — логотип и ссылки остаются чёрными (фон светлый) */
 body.home .header-inner.scrolled .logo,
 body.home .header-inner.scrolled .nav a,
 body.home .header-inner.scrolled .menu-toggle {
-  color: #ffffff;
+  color: #111111;
 }
 
-body.home .header-inner.scrolled .nav a:hover { color: rgba(255, 255, 255, 0.65); }
-body.home .header-inner.scrolled .nav a.active { color: #ffffff; }
-body.home .header-inner.scrolled .nav a.active::after { background: #ffffff; }
+body.home .header-inner.scrolled .nav a:hover { color: #555555; }
+body.home .header-inner.scrolled .nav a.active { color: #111111; }
+body.home .header-inner.scrolled .nav a.active::after { background: #111111; }
 
-/* Лого-марка: на тёмном hero и на тёмном скролл-фоне — белый квадрат
-   с чёрным знаком (инвертируем относительно базового стиля nike.css,
-   чтобы знак был виден). */
+/* Лого-марка: на светлом hero и на светлом скролл-фоне — чёрный квадрат
+   с белым знаком (инвертируем относительно базового стиля nike.css,
+   чтобы знак был виден на тёмном фоне марки). */
 body.home .logo-mark {
-  background: #ffffff;
-  color: var(--nike-ink);
+  background: #111111;
+  color: #ffffff;
   transition: background 0.3s ease, color 0.3s ease;
 }
 
 body.home .header-inner.scrolled .logo-mark {
-  background: #ffffff;
-  color: var(--nike-ink);
+  background: #111111;
+  color: #ffffff;
 }
 
-/* Кнопка "Записаться" в хедере — белая с тёмным текстом (контраст с
-   тёмным hero и тёмным скролл-фоном). */
+/* Кнопка "Записаться" в хедере — чёрная с белым текстом. */
 body.home .header-inner .header-actions .btn-primary,
 body.home .header-inner .header-actions a.btn-primary {
-  background: #ffffff !important;
-  color: var(--nike-ink) !important;
+  background: #111111 !important;
+  color: #ffffff !important;
   transition: background 0.3s ease, color 0.3s ease;
 }
 
 body.home .header-inner .header-actions .btn-primary:hover {
-  background: rgba(255, 255, 255, 0.85) !important;
+  background: #333333 !important;
 }
 
 body.home .header-inner.scrolled .header-actions .btn-primary,
 body.home .header-inner.scrolled .header-actions a.btn-primary {
-  background: #ffffff !important;
-  color: var(--nike-ink) !important;
+  background: #111111 !important;
+  color: #ffffff !important;
 }
 
 body.home .header-inner.scrolled .header-actions .btn-primary:hover {
-  background: rgba(255, 255, 255, 0.85) !important;
+  background: #333333 !important;
 }
 
-/* Мобильное меню на главной: тёмное с blur (на тёмном hero и при скролле).
-   (На мобильном nav скрыт, открывается через .open) */
+/* Мобильное меню на главной: светлое (на светлом hero). */
 body.home .mobile-menu {
-  background: rgba(15, 15, 15, 0.92);
-  -webkit-backdrop-filter: blur(16px);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.96);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border: 1px solid #e5e5e5;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
 }
 
-body.home .mobile-menu a { color: #ffffff; }
-body.home .mobile-menu a.active { color: #ffffff; }
-body.home .mobile-menu a.active::after { background: #ffffff; }
+body.home .mobile-menu a { color: #111111; }
+body.home .mobile-menu a.active { color: #111111; }
+body.home .mobile-menu a.active::after { background: #111111; }
 
 /* ===================================================================
-   21.5 ГЛАВНАЯ — ОБЩИЙ ТЁМНЫЙ ФОН СТРАНИЦЫ
-   Все секции ниже hero делят один тёмный фон (#0F0E1A),
-   поэтому границы между ними исчезают и hero плавно «растворяется».
+   21.5 ГЛАВНАЯ — СВЕТЛАЯ ТЕМА
+   Все секции ниже hero делят один светлый фон (чередование с #f7f7f7),
+   hero плавно «растворяется» через градиент в белый.
    =================================================================== */
 
 body.home {
-  background: #0F0E1A;
-  color: #ffffff;
+  background: #ffffff;
+  color: #111111;
 }
 
-/* Плавный градиентный переход от hero к следующей секции:
-   hero::after рисует мягкий градиент поверх фото (z-index 1),
-   между hero-media (0) и hero-content (2) — плавно "растворяет"
-   фото пианино в общий тёмный фон #0F0E1A внизу. */
+/* Плавный градиентный переход от светлого hero к белой секции:
+   лёгкий fade вниз — не нужен жёсткий, только тонкий */
 body.home .hero::after {
   content: "";
   position: absolute;
   left: 0;
   right: 0;
   bottom: -1px;
-  height: 220px;
+  height: 60px;
   background: linear-gradient(180deg,
-              rgba(15, 14, 26, 0) 0%,
-              rgba(15, 14, 26, 0.65) 65%,
-              #0F0E1A 100%);
+              rgba(255, 255, 255, 0) 0%,
+              #ffffff 100%);
   pointer-events: none;
   z-index: 1;
 }
@@ -2048,93 +2085,90 @@ body.home .hero {
   padding-bottom: 0;
 }
 
-/* Первая секция после hero (#lessons) — заподлицо с общим фоном */
+/* Первая секция после hero (#lessons) — светлый фон */
 body.home #lessons {
   background: transparent;
-  color: #ffffff;
+  color: #111111;
   padding-top: var(--nike-s-section);
 }
 
-body.home #lessons .section-head h2 { color: #ffffff; }
-body.home #lessons .section-head p  { color: rgba(255, 255, 255, 0.75); }
+body.home #lessons .section-head h2 { color: #111111; }
+body.home #lessons .section-head p  { color: #555555; }
 body.home #lessons .section-head .eyebrow {
-  color: rgba(255, 255, 255, 0.7);
-  background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(255, 255, 255, 0.12);
+  color: #555555;
+  background: #f7f7f7;
+  border-color: #e5e5e5;
 }
 
 /* Сброс стандартного nike.css-стиля карточек на главной в этой секции:
-   на тёмном фоне нам нужно не "белое с тенью", а "стекло поверх тёмного" */
+   на светлом фоне — flat white card с тонкой обводкой */
 body.home #lessons .glass-card {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
+  background: #ffffff;
+  border: 1px solid #e5e5e5;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
   border-radius: 16px;
   box-shadow: none;
   transition: background 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
 }
 
 body.home #lessons .glass-card:hover {
-  background: rgba(255, 255, 255, 0.10);
-  border-color: rgba(255, 255, 255, 0.22);
-  transform: translateY(-2px);
+  background: #ffffff;
+  border-color: #111111;
+  transform: translateY(-4px);
 }
 
-body.home #lessons .glass-card h3 { color: #ffffff; }
-body.home #lessons .glass-card p  { color: rgba(255, 255, 255, 0.75); }
+body.home #lessons .glass-card h3 { color: #111111; }
+body.home #lessons .glass-card p  { color: #555555; }
 
 body.home #lessons .card-icon {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: #ffffff;
+  background: #f7f7f7;
+  border: 1px solid #e5e5e5;
+  color: #111111;
   border-radius: 14px;
 }
 
-body.home #lessons .card-icon svg { color: #ffffff; }
+body.home #lessons .card-icon svg { color: #111111; }
 
-body.home #lessons .card-link { color: #ffffff; }
-body.home #lessons .card-link:hover { color: rgba(255, 255, 255, 0.75); }
+body.home #lessons .card-link { color: #111111; }
+body.home #lessons .card-link:hover { color: #555555; }
 
-/* Бейджи внутри карточек — адаптация под тёмный фон */
+/* Бейджи внутри карточек — light */
 body.home #lessons .tag {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: rgba(255, 255, 255, 0.75);
+  background: #f0f0f0;
+  border: 1px solid #e5e5e5;
+  color: #555555;
 }
 
 body.home #lessons .tag.tag-accent {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(255, 255, 255, 0.25);
+  background: #111111;
+  border-color: #111111;
   color: #ffffff;
 }
 
 /* ===================================================================
    23. ГЛАВНАЯ — ПРЕПОДАВАТЕЛИ
-   Переделываем в единый стиль с карточками направлений:
-   тёмный фон с лёгким стеклянным эффектом, единая палитра.
    =================================================================== */
 
-/* Секция — тёмный фон без разрыва с #lessons */
 body.home #teachers {
-  background: transparent;
-  color: #ffffff;
+  background: #f7f7f7;
+  color: #111111;
 }
 
-body.home #teachers .section-head h2 { color: #ffffff; }
-body.home #teachers .section-head p  { color: rgba(255, 255, 255, 0.75); }
+body.home #teachers .section-head h2 { color: #111111; }
+body.home #teachers .section-head p  { color: #555555; }
 body.home #teachers .section-head .eyebrow {
-  color: rgba(255, 255, 255, 0.7);
-  background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(255, 255, 255, 0.12);
+  color: #555555;
+  background: #ffffff;
+  border-color: #e5e5e5;
 }
 
-/* Карточка преподавателя = стекло на тёмном */
+/* Карточка преподавателя — flat white card */
 body.home #teachers .glass-card.teacher-card {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
+  background: #ffffff;
+  border: 1px solid #e5e5e5;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
   border-radius: 16px;
   padding: var(--nike-s-lg);
   box-shadow: none;
@@ -2142,42 +2176,39 @@ body.home #teachers .glass-card.teacher-card {
 }
 
 body.home #teachers .glass-card.teacher-card:hover {
-  background: rgba(255, 255, 255, 0.10);
-  border-color: rgba(255, 255, 255, 0.22);
-  transform: translateY(-2px);
+  background: #ffffff;
+  border-color: #111111;
+  transform: translateY(-4px);
 }
 
-body.home #teachers .teacher-card h3 { color: #ffffff; }
-body.home #teachers .teacher-role { color: rgba(255, 255, 255, 0.65); }
+body.home #teachers .teacher-card h3 { color: #111111; }
+body.home #teachers .teacher-role { color: #555555; }
 
-/* Фото-плашка: единый тёмный стеклянный фон, инициалы — белые */
+/* Фото-плашка: светлый soft-cloud фон с тёмными инициалами */
 body.home #teachers .teacher-photo {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: #ffffff;
+  background: #f7f7f7;
+  border: 1px solid #e5e5e5;
+  color: #111111;
   font-weight: 300;
   letter-spacing: 0.02em;
   border-radius: 16px;
 }
 
-/* Разделители внутри карточки */
 body.home #teachers .teacher-bio li {
-  border-top-color: rgba(255, 255, 255, 0.10);
-  color: rgba(255, 255, 255, 0.75);
+  border-top-color: #e5e5e5;
+  color: #555555;
 }
 body.home #teachers .teacher-bio li:first-child {
-  border-top-color: rgba(255, 255, 255, 0.10);
+  border-top-color: #e5e5e5;
 }
 body.home #teachers .teacher-quote {
-  color: #ffffff;
-  border-top-color: rgba(255, 255, 255, 0.12);
+  color: #111111;
+  border-top-color: #e5e5e5;
 }
 
-
-/* На внутренней странице /teachers.html — все 4 карточки получают
-   единый стиль "градиентные аватарки" (пункт 3 задачи — общий сценарий).
-   Чтобы все четыре выглядели гармонично, чередуем четыре заранее
-   подготовленных градиента. */
+/* Градиентные аватарки на внутренней /teachers.html — единый "color story"
+   (наследие от dark-theme, но в light-theme это работает как намеренный
+   color-anchor: единственный насыщенный цвет на нейтральной странице). */
 body.teachers .teacher-card:nth-child(1) .teacher-photo {
   background: linear-gradient(135deg, #667eea, #764ba2);
   color: #ffffff;
@@ -2185,7 +2216,7 @@ body.teachers .teacher-card:nth-child(1) .teacher-photo {
 }
 body.teachers .teacher-card:nth-child(2) .teacher-photo {
   background: linear-gradient(135deg, #f7971e, #ffd200);
-  color: var(--nike-ink);
+  color: #111111;
   font-weight: 300;
 }
 body.teachers .teacher-card:nth-child(3) .teacher-photo {
@@ -2201,49 +2232,48 @@ body.teachers .teacher-card:nth-child(4) .teacher-photo {
 
 /* ===================================================================
    25. ГЛАВНАЯ — ФОРМА: ВИЗУАЛЬНЫЙ ВЕС, КНОПКА
-   Тёмный стеклянный блок формы в единой палитре главной страницы.
    =================================================================== */
 
 body.home .form-card {
   max-width: 640px;
   margin: 0 auto;
   padding: 40px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: #f7f7f7;
+  border: 1px solid #e5e5e5;
   border-radius: 20px;
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
   box-shadow: none;
 }
 
-/* Тёмный фон секции формы — единый со страницей */
+/* Секция формы — светлый фон */
 body.home #trial {
-  background: transparent;
-  color: #ffffff;
+  background: #ffffff;
+  color: #111111;
 }
 
-body.home #trial .section-head h2 { color: #ffffff; }
-body.home #trial .section-head p  { color: rgba(255, 255, 255, 0.75); }
+body.home #trial .section-head h2 { color: #111111; }
+body.home #trial .section-head p  { color: #555555; }
 body.home #trial .section-head .eyebrow {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(255, 255, 255, 0.12);
-  color: rgba(255, 255, 255, 0.7);
+  background: #f7f7f7;
+  border-color: #e5e5e5;
+  color: #555555;
 }
 
-/* Подписи полей — светлые */
+/* Подписи полей — muted */
 body.home .form-card .field label,
-body.home .form-card .form-note { color: rgba(255, 255, 255, 0.75); }
+body.home .form-card .form-note { color: #999999; }
 
-/* Поля ввода: тёмные с лёгкой обводкой, при фокусе — светлая + glow */
+/* Поля ввода: светлые с тонкой обводкой, при фокусе — чёрная + glow */
 body.home .form-card .field input,
 body.home .form-card .field select,
 body.home .form-card .field textarea,
 body.home .form-card .select-trigger {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1.5px solid rgba(255, 255, 255, 0.14);
-  color: #ffffff;
+  background: #ffffff;
+  border: 1px solid #e5e5e5;
+  color: #111111;
   border-radius: 12px;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 body.home .form-card .field input:focus,
@@ -2251,23 +2281,23 @@ body.home .form-card .field select:focus,
 body.home .form-card .field textarea:focus,
 body.home .form-card .select.open .select-trigger {
   outline: none;
-  border-color: #ffffff;
-  background: rgba(255, 255, 255, 0.08);
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.08);
+  border-color: #111111;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(17, 17, 17, 0.06);
 }
 
 body.home .form-card .field input::placeholder,
 body.home .form-card .field textarea::placeholder,
 body.home .form-card .select-trigger .select-label.placeholder {
-  color: rgba(255, 255, 255, 0.45);
+  color: #999999;
 }
 
-/* Кнопка "Записаться на пробный урок" — белая с тёмным текстом (контраст) */
+/* Кнопка submit — чёрная с белым текстом */
 body.home .form-card button[type="submit"].btn,
 body.home .form-card .btn-primary {
-  background: #ffffff !important;
-  color: #0F0E1A !important;
-  border-radius: 12px;
+  background: #111111 !important;
+  color: #ffffff !important;
+  border-radius: 30px;
   height: 56px;
   font-weight: 500;
   transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
@@ -2276,9 +2306,9 @@ body.home .form-card .btn-primary {
 
 body.home .form-card button[type="submit"].btn:hover,
 body.home .form-card .btn-primary:hover {
-  background: rgba(255, 255, 255, 0.88) !important;
+  background: #333333 !important;
   transform: translateY(-1px);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
 }
 
 body.home .form-card button[type="submit"].btn:active,
@@ -2287,18 +2317,18 @@ body.home .form-card .btn-primary:active {
 }
 
 /* ===================================================================
-   25.5 ПРИНУДИТЕЛЬНЫЙ ТЁМНЫЙ СКРОЛЛ-ХЕДЕР (все страницы, любая тема)
+   25.5 ПРИНУДИТЕЛЬНЫЙ СВЕТЛЫЙ СКРОЛЛ-ХЕДЕР (все страницы, любая тема)
    Перебивает style.css :root[data-theme="light"] --header-bg-scrolled
-   и базовое .header-inner.scrolled. Сайт dark-first, поэтому даже при
-   выбранной "светлой" теме хедер при скролле остаётся тёмным.
+   и базовое .header-inner.scrolled. Сайт light-first, поэтому даже при
+   выбранной "тёмной" теме хедер при скролле остаётся светлым.
    =================================================================== */
 html[data-theme="light"] .header-inner.scrolled,
 html[data-theme="dark"]  .header-inner.scrolled {
-  background: rgba(15, 15, 15, 0.92) !important;
-  -webkit-backdrop-filter: blur(16px) saturate(160%) !important;
-  backdrop-filter: blur(16px) saturate(160%) !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
-  box-shadow: 0 1px 24px rgba(0, 0, 0, 0.4) !important;
+  background: rgba(255, 255, 255, 0.92) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  backdrop-filter: blur(12px) !important;
+  border-bottom: 1px solid #e5e5e5 !important;
+  box-shadow: 0 1px 12px rgba(0, 0, 0, 0.04) !important;
 }
 
 html[data-theme="light"] .header-inner.scrolled .logo,
@@ -2307,101 +2337,90 @@ html[data-theme="light"] .header-inner.scrolled .menu-toggle,
 html[data-theme="dark"]  .header-inner.scrolled .logo,
 html[data-theme="dark"]  .header-inner.scrolled .nav a,
 html[data-theme="dark"]  .header-inner.scrolled .menu-toggle {
-  color: #ffffff !important;
+  color: #111111 !important;
 }
 
 html[data-theme="light"] .header-inner.scrolled .logo-mark,
 html[data-theme="dark"]  .header-inner.scrolled .logo-mark {
-  background: #ffffff !important;
-  color: var(--nike-ink) !important;
+  background: #111111 !important;
+  color: #ffffff !important;
 }
 
 html[data-theme="light"] .header-inner.scrolled .header-actions .btn-primary,
 html[data-theme="light"] .header-inner.scrolled .header-actions a.btn-primary,
 html[data-theme="dark"]  .header-inner.scrolled .header-actions .btn-primary,
 html[data-theme="dark"]  .header-inner.scrolled .header-actions a.btn-primary {
-  background: #ffffff !important;
-  color: var(--nike-ink) !important;
+  background: #111111 !important;
+  color: #ffffff !important;
 }
 
 /* ===================================================================
-   26. ВНУТРЕННИЕ СТРАНИЦЫ — ЕДИНАЯ ТЁМНАЯ ТЕМА
-   Приводим lessons / teachers / pricing / contacts к виду главной:
-   тёмный фон #0F0E1A, прозрачный хедер с blur-эффектом при скролле,
-   белый заголовок hero, glass-карточки, белые CTA-кнопки, тёмный
-   футер. Логика — полная копия body.home, но через общий селектор
-   body.lessons / .teachers / .pricing / .contacts, чтобы случайно не
-   зацепить главную. Эталон — главная страница.
+   26. ВНУТРЕННИЕ СТРАНИЦЫ — ЕДИНАЯ СВЕТЛАЯ ТЕМА
+   Приводим lessons / teachers / pricing / contacts к светлой палитре:
+   белый фон, чёрный текст, чёткие hairlines. Базовый стиль карточек,
+   кнопок и таблиц уже задан в секциях 5-15 — здесь только перебиваем
+   те тёмные/glass-эффекты, которые style.css мог протащить.
    =================================================================== */
 
-/* === 26.1 Общий фон и базовая типографика === */
+/* === 26.0 Базовый фон и типографика внутренних страниц === */
 body.lessons,
 body.teachers,
 body.pricing,
 body.contacts {
-  background: #0F0E1A;
-  color: #ffffff;
+  background: #ffffff;
+  color: #111111;
 }
 
-/* === 26.2 Плавный "раствор" hero в общий тёмный фон === */
-body.lessons .hero::after,
-body.teachers .hero::after,
-body.pricing .hero::after,
-body.contacts .hero::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: -1px;
-  height: 220px;
-  background: linear-gradient(180deg,
-              rgba(15, 14, 26, 0) 0%,
-              rgba(15, 14, 26, 0.65) 65%,
-              #0F0E1A 100%);
-  pointer-events: none;
-  z-index: 1;
-}
-
-body.lessons .hero,
-body.teachers .hero,
-body.pricing .hero,
-body.contacts .hero {
-  padding-bottom: 0;
-  background: var(--nike-soft-cloud);
-}
-
-body.lessons .hero-media,
-body.teachers .hero-media,
-body.pricing .hero-media,
-body.contacts .hero-media {
-  background-color: #1a1a1a;
-}
-
-/* Поскольку фоновых фото для внутренних страниц нет, используем
-   тёмный градиент, имитирующий фото — чтобы не было видно светлого
-   soft-cloud. Контраст с белым заголовком остаётся достаточным. */
-body.lessons .hero-media::after,
-body.teachers .hero-media::after,
-body.pricing .hero-media::after,
-body.contacts .hero-media::after {
-  background: linear-gradient(180deg,
-              rgba(0,0,0,0.25) 0%,
-              rgba(0,0,0,0.55) 60%,
-              rgba(0,0,0,0.7) 100%);
-}
-
-/* === 26.3 Прозрачный хедер на тёмном hero === */
+/* === 26.1 Хедер — внутренние страницы ===
+   На внутренних страницах hero тёмный (#111111) идёт сразу под хедером.
+   Хедер прозрачный без border/box-shadow, чтобы плавно переходить в тёмный hero
+   без видимой полоски на стыке. */
 body.lessons .site-header,
 body.teachers .site-header,
 body.pricing .site-header,
 body.contacts .site-header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
   background: transparent;
+  border: none;
   box-shadow: none;
-  transition: background 0.3s ease, box-shadow 0.3s ease;
+  color: #ffffff;
+}
+
+/* На внутренних страницах nav-ссылки и лого — белые (тёмный hero) */
+body.lessons .site-header a,
+body.teachers .site-header a,
+body.pricing .site-header a,
+body.contacts .site-header a { color: #ffffff; }
+
+body.lessons .site-header .nav a:hover,
+body.teachers .site-header .nav a:hover,
+body.pricing .site-header .nav a:hover,
+body.contacts .site-header .nav a:hover { color: #cccccc; }
+
+body.lessons .site-header .nav a.active,
+body.teachers .site-header .nav a.active,
+body.pricing .site-header .nav a.active,
+body.contacts .site-header .nav a.active { color: #ffffff; }
+
+body.lessons .site-header .menu-toggle,
+body.teachers .site-header .menu-toggle,
+body.pricing .site-header .menu-toggle,
+body.contacts .site-header .menu-toggle { color: #ffffff; }
+
+/* На тёмном hero (внутренние страницы) — инвертируем primary-кнопку в хедере:
+   белый фон + чёрный текст, чтобы кнопка «Записаться» читалась на тёмном фоне. */
+body.lessons .header-inner:not(.scrolled) .header-actions a.btn-primary,
+body.teachers .header-inner:not(.scrolled) .header-actions a.btn-primary,
+body.pricing .header-inner:not(.scrolled) .header-actions a.btn-primary,
+body.contacts .header-inner:not(.scrolled) .header-actions a.btn-primary {
+  background: #ffffff !important;
+  color: #111111 !important;
+}
+
+body.lessons .header-inner:not(.scrolled) .header-actions a.btn-primary:hover,
+body.teachers .header-inner:not(.scrolled) .header-actions a.btn-primary:hover,
+body.pricing .header-inner:not(.scrolled) .header-actions a.btn-primary:hover,
+body.contacts .header-inner:not(.scrolled) .header-actions a.btn-primary:hover {
+  background: #f0f0f0 !important;
 }
 
 body.lessons .header-inner,
@@ -2409,220 +2428,80 @@ body.teachers .header-inner,
 body.pricing .header-inner,
 body.contacts .header-inner {
   background: transparent;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
   border: none;
   box-shadow: none;
-  transition:
-    background 0.3s ease,
-    backdrop-filter 0.3s ease,
-    -webkit-backdrop-filter 0.3s ease,
-    border-color 0.3s ease,
-    box-shadow 0.3s ease,
-    color 0.3s ease;
+  transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 body.lessons .header-inner.scrolled,
 body.teachers .header-inner.scrolled,
 body.pricing .header-inner.scrolled,
 body.contacts .header-inner.scrolled {
-  background: rgba(15, 15, 15, 0.92);
-  -webkit-backdrop-filter: blur(16px) saturate(160%);
-  backdrop-filter: blur(16px) saturate(160%);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 1px 24px rgba(0, 0, 0, 0.4);
+  background: rgba(255, 255, 255, 0.92) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  backdrop-filter: blur(12px) !important;
+  border-bottom: 1px solid #e5e5e5 !important;
+  box-shadow: 0 1px 12px rgba(0, 0, 0, 0.04) !important;
+  color: #111111 !important;
 }
 
-body.lessons .logo,
-body.lessons .nav a,
-body.lessons .menu-toggle,
-body.teachers .logo,
-body.teachers .nav a,
-body.teachers .menu-toggle,
-body.pricing .logo,
-body.pricing .nav a,
-body.pricing .menu-toggle,
-body.contacts .logo,
-body.contacts .nav a,
-body.contacts .menu-toggle {
-  color: #ffffff;
-  transition: color 0.3s ease;
-}
+body.lessons .header-inner.scrolled a,
+body.teachers .header-inner.scrolled a,
+body.pricing .header-inner.scrolled a,
+body.contacts .header-inner.scrolled a { color: #111111 !important; }
 
-body.lessons .nav a:hover,
-body.teachers .nav a:hover,
-body.pricing .nav a:hover,
-body.contacts .nav a:hover { color: rgba(255, 255, 255, 0.75); }
-
-body.lessons .nav a.active,
-body.teachers .nav a.active,
-body.pricing .nav a.active,
-body.contacts .nav a.active { color: #ffffff; }
-
-body.lessons .nav a.active::after,
-body.teachers .nav a.active::after,
-body.pricing .nav a.active::after,
-body.contacts .nav a.active::after {
-  background: #ffffff;
-}
-
-body.lessons .header-inner.scrolled .logo,
-body.lessons .header-inner.scrolled .nav a,
 body.lessons .header-inner.scrolled .menu-toggle,
-body.teachers .header-inner.scrolled .logo,
-body.teachers .header-inner.scrolled .nav a,
 body.teachers .header-inner.scrolled .menu-toggle,
-body.pricing .header-inner.scrolled .logo,
-body.pricing .header-inner.scrolled .nav a,
 body.pricing .header-inner.scrolled .menu-toggle,
-body.contacts .header-inner.scrolled .logo,
-body.contacts .header-inner.scrolled .nav a,
-body.contacts .header-inner.scrolled .menu-toggle {
-  color: #ffffff;
-}
+body.contacts .header-inner.scrolled .menu-toggle { color: #111111 !important; }
 
-body.lessons .header-inner.scrolled .nav a:hover,
-body.teachers .header-inner.scrolled .nav a:hover,
-body.pricing .header-inner.scrolled .nav a:hover,
-body.contacts .header-inner.scrolled .nav a:hover { color: rgba(255, 255, 255, 0.65); }
-
-body.lessons .header-inner.scrolled .nav a.active,
-body.teachers .header-inner.scrolled .nav a.active,
-body.pricing .header-inner.scrolled .nav a.active,
-body.contacts .header-inner.scrolled .nav a.active { color: #ffffff; }
-
-body.lessons .header-inner.scrolled .nav a.active::after,
-body.teachers .header-inner.scrolled .nav a.active::after,
-body.pricing .header-inner.scrolled .nav a.active::after,
-body.contacts .header-inner.scrolled .nav a.active::after { background: #ffffff; }
-
-/* Лого-марка: на тёмном hero — белый квадрат с чёрным знаком,
-   на скролле (тёмный хедер) — оставляем белый квадрат для контраста */
-body.lessons .logo-mark,
-body.teachers .logo-mark,
-body.pricing .logo-mark,
-body.contacts .logo-mark {
-  background: #ffffff;
-  color: var(--nike-ink);
-  transition: background 0.3s ease, color 0.3s ease;
-}
-
-body.lessons .header-inner.scrolled .logo-mark,
-body.teachers .header-inner.scrolled .logo-mark,
-body.pricing .header-inner.scrolled .logo-mark,
-body.contacts .header-inner.scrolled .logo-mark {
-  background: #ffffff;
-  color: var(--nike-ink);
-}
-
-/* Кнопка "Записаться" в хедере — белая с тёмным текстом (контраст) */
-body.lessons .header-inner .header-actions .btn-primary,
-body.lessons .header-inner .header-actions a.btn-primary,
-body.teachers .header-inner .header-actions .btn-primary,
-body.teachers .header-inner .header-actions a.btn-primary,
-body.pricing .header-inner .header-actions .btn-primary,
-body.pricing .header-inner .header-actions a.btn-primary,
-body.contacts .header-inner .header-actions .btn-primary,
-body.contacts .header-inner .header-actions a.btn-primary {
-  background: #ffffff !important;
-  color: #0F0E1A !important;
-  transition: background 0.3s ease, color 0.3s ease;
-}
-
-body.lessons .header-inner .header-actions .btn-primary:hover,
-body.teachers .header-inner .header-actions .btn-primary:hover,
-body.pricing .header-inner .header-actions .btn-primary:hover,
-body.contacts .header-inner .header-actions .btn-primary:hover {
-  background: rgba(255, 255, 255, 0.85) !important;
-}
-
-body.lessons .header-inner.scrolled .header-actions .btn-primary,
-body.lessons .header-inner.scrolled .header-actions a.btn-primary,
-body.teachers .header-inner.scrolled .header-actions .btn-primary,
-body.teachers .header-inner.scrolled .header-actions a.btn-primary,
-body.pricing .header-inner.scrolled .header-actions .btn-primary,
-body.pricing .header-inner.scrolled .header-actions a.btn-primary,
-body.contacts .header-inner.scrolled .header-actions .btn-primary,
-body.contacts .header-inner.scrolled .header-actions a.btn-primary {
-  background: #ffffff !important;
-  color: #0F0E1A !important;
-}
-
-body.lessons .header-inner.scrolled .header-actions .btn-primary:hover,
-body.teachers .header-inner.scrolled .header-actions .btn-primary:hover,
-body.pricing .header-inner.scrolled .header-actions .btn-primary:hover,
-body.contacts .header-inner.scrolled .header-actions .btn-primary:hover {
-  background: rgba(255, 255, 255, 0.85) !important;
-}
-
-/* Мобильное меню — тёмное с blur */
-body.lessons .mobile-menu,
-body.teachers .mobile-menu,
-body.pricing .mobile-menu,
-body.contacts .mobile-menu {
-  background: rgba(15, 14, 26, 0.95);
-  -webkit-backdrop-filter: blur(16px);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.10);
-}
-
-body.lessons .mobile-menu a,
-body.teachers .mobile-menu a,
-body.pricing .mobile-menu a,
-body.contacts .mobile-menu a {
-  color: #ffffff;
-  border-bottom-color: rgba(255, 255, 255, 0.08);
-}
-
-body.lessons .mobile-menu a.active,
-body.teachers .mobile-menu a.active,
-body.pricing .mobile-menu a.active,
-body.contacts .mobile-menu a.active { color: #ffffff; }
-
-body.lessons .mobile-menu a.active::after,
-body.teachers .mobile-menu a.active::after,
-body.pricing .mobile-menu a.active::after,
-body.contacts .mobile-menu a.active::after { background: #ffffff; }
-
-/* === 26.4 Все секции — общий тёмный фон === */
+/* === 26.2 Секции внутренних страниц === */
 body.lessons .section,
 body.teachers .section,
 body.pricing .section,
 body.contacts .section {
   background: transparent;
-  color: #ffffff;
+  color: #111111;
 }
 
 body.lessons .section-head h2,
 body.teachers .section-head h2,
 body.pricing .section-head h2,
-body.contacts .section-head h2 { color: #ffffff; }
+body.contacts .section-head h2 { color: #111111; }
 
 body.lessons .section-head p,
 body.teachers .section-head p,
 body.pricing .section-head p,
-body.contacts .section-head p { color: rgba(255, 255, 255, 0.75); }
+body.contacts .section-head p { color: #555555; }
 
 body.lessons .section-head .eyebrow,
 body.teachers .section-head .eyebrow,
 body.pricing .section-head .eyebrow,
 body.contacts .section-head .eyebrow {
-  color: rgba(255, 255, 255, 0.7);
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #555555;
+  background: #f7f7f7;
+  border: 1px solid #e5e5e5;
 }
 
-/* === 26.5 Glass-карточки (для общих секций: teachers-grid, reviews-grid) === */
+/* === 26.3 Чередование секций (light gray stripe) === */
+body.lessons .section:nth-of-type(even),
+body.teachers .section:nth-of-type(even),
+body.pricing .section:nth-of-type(even),
+body.contacts .section:nth-of-type(even) {
+  background: #f7f7f7;
+}
+
+/* === 26.4 Cards (lessons/teachers/contacts) — flat light === */
 body.lessons .glass-card,
 body.teachers .glass-card,
 body.pricing .glass-card,
 body.contacts .glass-card {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
+  background: #ffffff;
+  border: 1px solid #e5e5e5;
   border-radius: 16px;
   box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
   transition: background 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
 }
 
@@ -2630,66 +2509,65 @@ body.lessons .glass-card:hover,
 body.teachers .glass-card:hover,
 body.pricing .glass-card:hover,
 body.contacts .glass-card:hover {
-  background: rgba(255, 255, 255, 0.10);
-  border-color: rgba(255, 255, 255, 0.22);
-  transform: translateY(-2px);
+  border-color: #111111;
+  transform: translateY(-4px);
 }
 
 body.lessons .glass-card h3,
 body.teachers .glass-card h3,
 body.pricing .glass-card h3,
-body.contacts .glass-card h3 { color: #ffffff; }
+body.contacts .glass-card h3 { color: #111111; }
 
 body.lessons .glass-card p,
 body.teachers .glass-card p,
 body.pricing .glass-card p,
-body.contacts .glass-card p { color: rgba(255, 255, 255, 0.75); }
+body.contacts .glass-card p { color: #555555; }
 
 body.lessons .glass-card .card-icon,
 body.teachers .glass-card .card-icon,
 body.pricing .glass-card .card-icon,
 body.contacts .glass-card .card-icon {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: #ffffff;
+  background: #f7f7f7;
+  border: 1px solid #e5e5e5;
+  color: #111111;
   border-radius: 14px;
 }
 
 body.lessons .glass-card .card-icon svg,
 body.teachers .glass-card .card-icon svg,
 body.pricing .glass-card .card-icon svg,
-body.contacts .glass-card .card-icon svg { color: #ffffff; }
+body.contacts .glass-card .card-icon svg { color: #111111; }
 
 body.lessons .glass-card .card-link,
 body.teachers .glass-card .card-link,
 body.pricing .glass-card .card-link,
-body.contacts .glass-card .card-link { color: #ffffff; }
+body.contacts .glass-card .card-link { color: #111111; }
 
 body.lessons .glass-card .card-link:hover,
 body.teachers .glass-card .card-link:hover,
 body.pricing .glass-card .card-link:hover,
-body.contacts .glass-card .card-link:hover { color: rgba(255, 255, 255, 0.75); }
+body.contacts .glass-card .card-link:hover { color: #555555; }
 
-/* Бейджи внутри карточек — адаптация под тёмный фон */
+/* === 26.5 Tags (бейджи) — light === */
 body.lessons .tag,
 body.teachers .tag,
 body.pricing .tag,
 body.contacts .tag {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: rgba(255, 255, 255, 0.75);
+  background: #f0f0f0;
+  border: 1px solid #e5e5e5;
+  color: #555555;
 }
 
 body.lessons .tag.tag-accent,
 body.teachers .tag.tag-accent,
 body.pricing .tag.tag-accent,
 body.contacts .tag.tag-accent {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(255, 255, 255, 0.25);
+  background: #111111;
+  border-color: #111111;
   color: #ffffff;
 }
 
-/* === 26.6 Кнопка primary: белая с тёмным текстом (контраст) === */
+/* === 26.6 Кнопка primary — чёрная с белым === */
 body.lessons .btn-primary,
 body.lessons a.btn-primary,
 body.teachers .btn-primary,
@@ -2698,8 +2576,8 @@ body.pricing .btn-primary,
 body.pricing a.btn-primary,
 body.contacts .btn-primary,
 body.contacts a.btn-primary {
-  background: #ffffff !important;
-  color: #0F0E1A !important;
+  background: #111111 !important;
+  color: #ffffff !important;
   box-shadow: none !important;
   transform: none !important;
 }
@@ -2713,30 +2591,28 @@ body.lessons .btn-primary:hover,
 body.teachers .btn-primary:hover,
 body.pricing .btn-primary:hover,
 body.contacts .btn-primary:hover {
-  background: rgba(255, 255, 255, 0.88) !important;
+  background: #333333 !important;
   transform: translateY(-1px) !important;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12) !important;
 }
 
-/* === 26.7 Форма: тёмное стекло, белые CTA ===
-   !important используется чтобы перебить inline-стиль background на
-   contacts.html (там форма приходит с background: rgba(15,14,26,0.5)) */
+/* === 26.7 Форма — light === */
 body.lessons .form-card,
 body.teachers .form-card,
 body.pricing .form-card,
 body.contacts .form-card {
-  background: rgba(255, 255, 255, 0.06) !important;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: #f7f7f7 !important;
+  border: 1px solid #e5e5e5;
   border-radius: 20px;
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
   box-shadow: none;
 }
 
 body.lessons .form-card .field label,
 body.teachers .form-card .field label,
 body.pricing .form-card .field label,
-body.contacts .form-card .field label { color: rgba(255, 255, 255, 0.65); }
+body.contacts .form-card .field label { color: #999999; }
 
 body.lessons .form-card .field input,
 body.lessons .form-card .field select,
@@ -2754,9 +2630,9 @@ body.contacts .form-card .field input,
 body.contacts .form-card .field select,
 body.contacts .form-card .field textarea,
 body.contacts .form-card .select-trigger {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1.5px solid rgba(255, 255, 255, 0.14);
-  color: #ffffff;
+  background: #ffffff;
+  border: 1.5px solid #e5e5e5;
+  color: #111111;
   border-radius: 12px;
   transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
@@ -2778,9 +2654,9 @@ body.contacts .form-card .field select:focus,
 body.contacts .form-card .field textarea:focus,
 body.contacts .form-card .select.open .select-trigger {
   outline: none;
-  border-color: #ffffff;
-  background: rgba(255, 255, 255, 0.08);
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.08);
+  border-color: #111111;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(17, 17, 17, 0.06);
 }
 
 body.lessons .form-card .field input::placeholder,
@@ -2795,38 +2671,39 @@ body.pricing .form-card .select-trigger .select-label.placeholder,
 body.contacts .form-card .field input::placeholder,
 body.contacts .form-card .field textarea::placeholder,
 body.contacts .form-card .select-trigger .select-label.placeholder {
-  color: rgba(255, 255, 255, 0.45);
+  color: #999999;
 }
 
 body.lessons .form-card .form-note,
 body.teachers .form-card .form-note,
 body.pricing .form-card .form-note,
-body.contacts .form-card .form-note { color: rgba(255, 255, 255, 0.6); }
+body.contacts .form-card .form-note { color: #999999; }
 
 body.lessons .form-card .btn-primary,
 body.teachers .form-card .btn-primary,
 body.pricing .form-card .btn-primary,
 body.contacts .form-card .btn-primary {
-  border-radius: 12px;
+  border-radius: 30px;
   height: 56px;
   font-weight: 500;
 }
 
-/* === 26.8 Кастомный select-меню — тёмное стекло === */
+/* === 26.8 Custom select — light === */
 body.lessons .select-menu,
 body.teachers .select-menu,
 body.pricing .select-menu,
 body.contacts .select-menu {
-  background: #1a1a1a;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: none;
+  background: #ffffff;
+  border: 1px solid #e5e5e5;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
 }
 
 body.lessons .select-option,
 body.teachers .select-option,
 body.pricing .select-option,
 body.contacts .select-option {
-  color: #ffffff;
+  color: #111111;
   background: transparent;
 }
 
@@ -2838,8 +2715,8 @@ body.pricing .select-option:hover,
 body.pricing .select-option:focus-visible,
 body.contacts .select-option:hover,
 body.contacts .select-option:focus-visible {
-  background: rgba(255, 255, 255, 0.08);
-  color: #ffffff;
+  background: #f7f7f7;
+  color: #111111;
 }
 
 body.lessons .select-option.is-active,
@@ -2850,321 +2727,268 @@ body.pricing .select-option.is-active,
 body.pricing .select-option.is-selected,
 body.contacts .select-option.is-active,
 body.contacts .select-option.is-selected {
-  background: rgba(255, 255, 255, 0.10);
-  color: #ffffff;
+  background: #f7f7f7;
+  color: #111111;
+  font-weight: 500;
 }
 
 body.lessons .select-option .check,
 body.teachers .select-option .check,
 body.pricing .select-option .check,
-body.contacts .select-option .check { color: #ffffff; }
+body.contacts .select-option .check { color: #111111; }
 
-/* === 26.9 Футер — тёмный (как на главной) === */
-body.lessons .site-footer,
-body.teachers .site-footer,
-body.pricing .site-footer,
-body.contacts .site-footer {
-  background: #0F0E1A;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.75);
-}
-
-body.lessons .footer-brand p,
-body.lessons .footer-col a,
-body.lessons .footer-bottom,
-body.teachers .footer-brand p,
-body.teachers .footer-col a,
-body.teachers .footer-bottom,
-body.pricing .footer-brand p,
-body.pricing .footer-col a,
-body.pricing .footer-bottom,
-body.contacts .footer-brand p,
-body.contacts .footer-col a,
-body.contacts .footer-bottom {
-  color: rgba(255, 255, 255, 0.75);
-}
-
-body.lessons .footer-col h4,
-body.lessons .logo,
-body.lessons .footer-col li,
-body.lessons .site-footer a,
-body.teachers .footer-col h4,
-body.teachers .logo,
-body.teachers .footer-col li,
-body.teachers .site-footer a,
-body.pricing .footer-col h4,
-body.pricing .logo,
-body.pricing .footer-col li,
-body.pricing .site-footer a,
-body.contacts .footer-col h4,
-body.contacts .logo,
-body.contacts .footer-col li,
-body.contacts .site-footer a {
-  color: #ffffff;
-}
-
-body.lessons .footer-col a:hover,
-body.teachers .footer-col a:hover,
-body.pricing .footer-col a:hover,
-body.contacts .footer-col a:hover { color: rgba(255, 255, 255, 0.75); }
-
-body.lessons .footer-bottom,
-body.teachers .footer-bottom,
-body.pricing .footer-bottom,
-body.contacts .footer-bottom {
-  border-top-color: rgba(255, 255, 255, 0.10);
-}
-
-body.lessons .footer-socials .social-link,
-body.teachers .footer-socials .social-link,
-body.pricing .footer-socials .social-link,
-body.contacts .footer-socials .social-link {
-  background: rgba(255, 255, 255, 0.06);
-  color: #ffffff;
-}
-
-/* === 26.10 LESSONS — блоки направлений (Фортепиано / Гитара / Вокал) === */
+/* === 26.9 LESSONS — блоки направлений === */
 body.lessons .lesson-block {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: #ffffff;
+  border: 1px solid #e5e5e5;
   border-radius: 20px;
   padding: var(--nike-s-xl);
-  transition: background 0.3s ease, border-color 0.3s ease;
+  transition: background 0.3s ease, border-color 0.3s ease, transform 0.3s ease;
 }
 
 body.lessons .lesson-block:hover {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(255, 255, 255, 0.18);
+  border-color: #111111;
+  transform: translateY(-2px);
 }
 
 body.lessons .lesson-visual {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: #f7f7f7;
+  border: 1px solid #e5e5e5;
   border-radius: 16px;
 }
 
-body.lessons .lesson-visual svg { color: #ffffff; }
+body.lessons .lesson-visual svg { color: #111111; }
 
-body.lessons .lesson-text h2 { color: #ffffff; }
+body.lessons .lesson-text h2 { color: #111111; }
 
-body.lessons .lesson-text p { color: rgba(255, 255, 255, 0.75); }
+body.lessons .lesson-text p { color: #555555; }
 
 body.lessons .lesson-text .eyebrow {
-  color: rgba(255, 255, 255, 0.65);
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #555555;
+  background: #f7f7f7;
+  border: 1px solid #e5e5e5;
 }
 
 body.lessons .lesson-meta {
-  border-top-color: rgba(255, 255, 255, 0.10);
+  border-top-color: #e5e5e5;
 }
 
 body.lessons .lesson-meta-item .lbl {
-  color: #666;
+  color: #999999;
   font-size: 11px;
   letter-spacing: 0.1em;
   font-weight: 400;
   text-transform: uppercase;
 }
 
-body.lessons .lesson-meta-item .val { color: #ffffff; }
+body.lessons .lesson-meta-item .val { color: #111111; }
 
-body.lessons .lesson-meta-item .val small.price-sub { color: rgba(255, 255, 255, 0.6); }
+body.lessons .lesson-meta-item .val small.price-sub { color: #999999; }
 
-/* === 26.11 LESSONS — таблица сравнения форматов === */
-body.lessons .compare {
-  background: rgba(255, 255, 255, 0.04);
-  border-top-color: rgba(255, 255, 255, 0.10);
-  border-bottom-color: rgba(255, 255, 255, 0.10);
+/* === 26.10 LESSONS / PRICING — таблица сравнения === */
+body.lessons .compare,
+body.pricing .compare {
+  background: #ffffff;
+  border: 1px solid #e5e5e5;
+  border-top-color: #e5e5e5;
+  border-bottom-color: #e5e5e5;
   border-radius: 16px;
 }
 
-body.lessons .compare-row {
-  border-top-color: rgba(255, 255, 255, 0.07);
+body.lessons .compare-row,
+body.pricing .compare-row {
+  border-top-color: #e5e5e5;
 }
 
-body.lessons .compare-row:first-child { border-top: none; }
+body.lessons .compare-row:first-child,
+body.pricing .compare-row:first-child { border-top: none; }
 
-body.lessons .compare-row:hover:not(.head) { background: rgba(255, 255, 255, 0.04); }
+body.lessons .compare-row:hover:not(.head),
+body.pricing .compare-row:hover:not(.head) { background: #fafafa; }
 
-body.lessons .compare-row:not(.head):nth-child(even) { background: rgba(255, 255, 255, 0.025); }
+body.lessons .compare-row:not(.head):nth-child(odd),
+body.pricing .compare-row:not(.head):nth-child(odd) { background: #fafafa; }
 
-body.lessons .compare-row .label {
-  color: #ffffff;
+body.lessons .compare-row .label,
+body.pricing .compare-row .label {
+  color: #111111;
   font-weight: 500;
 }
 
-body.lessons .compare-row .cell { color: #d0d0d0; }
+body.lessons .compare-row .cell,
+body.pricing .compare-row .cell { color: #555555; }
 
 body.lessons .compare-row.head .label,
-body.lessons .compare-row.head .cell {
-  color: #666;
-  font-weight: 400;
+body.lessons .compare-row.head .cell,
+body.pricing .compare-row.head .label,
+body.pricing .compare-row.head .cell {
+  color: #999999;
+  font-weight: 500;
 }
 
-body.lessons .compare-row .cell.cell-wide { color: rgba(255, 255, 255, 0.65); }
+body.lessons .compare-row .cell.cell-wide,
+body.pricing .compare-row .cell.cell-wide { color: #555555; }
 
-body.lessons .compare-row .cell.featured { color: #ffffff; }
+body.lessons .compare-row .cell.featured,
+body.pricing .compare-row .cell.featured {
+  color: #111111;
+  background: #f7f7f7;
+  box-shadow: inset 2px 0 0 0 #111111;
+}
 
-/* === 26.12 TEACHERS — карточки преподавателей === */
-body.teachers h2[style*="font-size"] { color: #ffffff; }
-body.teachers p[style*="margin: 8px 0 0"] { color: rgba(255, 255, 255, 0.65); }
+body.pricing .compare-row .label small,
+body.pricing .compare-row .cell .price-sub { color: #999999; }
+
+/* Бейдж "выгода" в pricing — чёрный */
+body.pricing .compare-row .cell .badge {
+  background: #111111;
+  color: #ffffff;
+  border: none;
+}
+
+/* Бейдж "экономия X%" в pricing — light */
+body.pricing .compare-row .cell .badge.badge-soft {
+  background: #f0f0f0;
+  color: #555555;
+  border: 1px solid #e5e5e5;
+}
+
+/* Сноска "Чем больше занятий..." */
+body.pricing p[style*="color: var(--color-text-muted)"] { color: #999999 !important; }
+
+/* === 26.11 TEACHERS — карточки преподавателей === */
+body.teachers h2[style*="font-size"] { color: #111111; }
+body.teachers p[style*="margin: 8px 0 0"] { color: #555555; }
 
 body.teachers .teacher-card {
   padding: var(--nike-s-lg);
 }
 
-body.teachers .teacher-card h3 { color: #ffffff; }
+body.teachers .teacher-card a,
+body.teachers .teacher-card .teacher-fact,
+body.teachers .teacher-card .teacher-quote,
+body.teachers .teacher-card p {
+  color: #555555;
+}
 
-body.teachers .teacher-role { color: rgba(255, 255, 255, 0.65); }
+body.teachers .teacher-card .teacher-name {
+  color: #111111;
+}
+
+body.teachers .teacher-card .teacher-subject {
+  color: #888888;
+}
+
+body.teachers .teacher-card h3 { color: #111111; }
+
+body.teachers .teacher-role { color: #888888; }
 
 body.teachers .teacher-bio {
-  color: rgba(255, 255, 255, 0.75);
+  color: #555555;
 }
 
 body.teachers .teacher-bio li {
-  border-top-color: rgba(255, 255, 255, 0.10);
-  color: rgba(255, 255, 255, 0.75);
+  border-top-color: #e5e5e5;
+  color: #555555;
+}
+
+body.teachers .teacher-bio li::before {
+  background: #111111 !important;
 }
 
 body.teachers .teacher-bio li:first-child {
-  border-top-color: rgba(255, 255, 255, 0.10);
+  border-top-color: #e5e5e5;
 }
 
 body.teachers .teacher-quote {
-  border-top-color: rgba(255, 255, 255, 0.12);
-  color: #ffffff;
+  background: transparent !important;
+  border-left: none !important;
+  border-top: 1px solid #e5e5e5;
+  border-radius: 0;
+  color: #555555;
   font-style: italic;
+  padding: var(--nike-s-md) 0 0;
+  margin: 0;
+  text-align: left;
 }
 
-/* === 26.13 PRICING — таблицы цен === */
-body.pricing .compare {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  border-top-color: rgba(255, 255, 255, 0.10);
-  border-bottom-color: rgba(255, 255, 255, 0.10);
-  border-radius: 16px;
+body.teachers .teacher-quote::before {
+  display: none !important;
+  content: none !important;
 }
 
-body.pricing .compare-row {
-  border-top-color: rgba(255, 255, 255, 0.07);
-}
-
-body.pricing .compare-row:first-child { border-top: none; }
-
-body.pricing .compare-row:hover:not(.head) { background: rgba(255, 255, 255, 0.04); }
-
-body.pricing .compare-row:not(.head):nth-child(even) { background: rgba(255, 255, 255, 0.025); }
-
-body.pricing .compare-row .label {
-  color: #ffffff;
-  font-weight: 500;
-}
-
-body.pricing .compare-row .cell { color: #d0d0d0; }
-
-body.pricing .compare-row.head .label,
-body.pricing .compare-row.head .cell {
-  color: #666;
-  font-weight: 400;
-}
-
-body.pricing .compare-row .cell.cell-wide { color: rgba(255, 255, 255, 0.65); }
-
-body.pricing .compare-row .cell.featured { color: #ffffff; }
-
-body.pricing .compare-row .label small,
-body.pricing .compare-row .cell .price-sub { color: rgba(255, 255, 255, 0.6); }
-
-/* Бейдж "выгода" — оставляем тёмным с белым текстом */
-body.pricing .compare-row .cell .badge {
-  background: rgba(255, 255, 255, 0.12);
-  color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-}
-
-/* Бейдж "экономия X%" — адаптация под тёмный */
-body.pricing .compare-row .cell .badge.badge-soft {
-  background: rgba(255, 255, 255, 0.06);
-  color: rgba(255, 255, 255, 0.75);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-}
-
-/* Сноска "Чем больше занятий..." */
-body.pricing p[style*="color: var(--color-text-muted)"] { color: rgba(255, 255, 255, 0.6) !important; }
-
-/* === 26.14 CONTACTS — контактная информация === */
+/* === 26.12 CONTACTS — контактная информация === */
 body.contacts .contact-list li {
-  border-top-color: rgba(255, 255, 255, 0.10);
+  border-top-color: #e5e5e5;
 }
 
 body.contacts .contact-list li:first-child {
-  border-top-color: rgba(255, 255, 255, 0.10);
+  border-top-color: #e5e5e5;
 }
 
 body.contacts .contact-list .icon {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: #ffffff;
+  background: #f7f7f7;
+  border: 1px solid #e5e5e5;
+  color: #111111;
 }
 
 body.contacts .contact-list .info-label {
-  color: #666;
+  color: #999999;
   font-size: 11px;
   letter-spacing: 0.1em;
   font-weight: 400;
 }
 
-body.contacts .contact-list .info-val { color: #ffffff; }
+body.contacts .contact-list .info-val { color: #111111; }
 
-body.contacts .contact-list a.info-val:hover { color: rgba(255, 255, 255, 0.75); }
+body.contacts .contact-list a.info-val:hover { color: #555555; }
 
-/* Названия секций в contacts (h2 внутри .reveal) — белые */
-body.contacts h2[style*="font-size"] { color: #ffffff; }
+body.contacts h2[style*="font-size"] { color: #111111; }
 
 body.contacts p[style*="margin-bottom: 28px"],
-body.contacts p[style*="margin-bottom: 8px"] { color: rgba(255, 255, 255, 0.65); }
+body.contacts p[style*="margin-bottom: 8px"] { color: #555555; }
 
-/* Ссылки в соцсетях (ВКонтакте / Telegram) */
-body.contacts a[style*="color: var(--color-accent)"] { color: #ffffff !important; }
-body.contacts a[style*="color: var(--color-accent)"]:hover { color: rgba(255, 255, 255, 0.75) !important; }
+/* Ссылки в соцсетях (ВКонтакте / Telegram) — light */
+body.contacts .contact-social-link {
+  color: #111111;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+body.contacts .contact-social-link:not(:last-child) { margin-right: 12px; }
+body.contacts .contact-social-link:hover { color: #555555; }
 
-/* Карта — адаптация под тёмный фон (пока это плейсхолдер) */
+/* Карта — light placeholder */
 body.contacts .map-placeholder {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  color: rgba(255, 255, 255, 0.55);
+  background: #f7f7f7;
+  border: 1px solid #e5e5e5;
+  color: #999999;
 }
 
-/* Если будет реальная <iframe> карты — применяем тёмный фильтр */
-body.contacts .map-placeholder iframe,
-body.contacts iframe[src*="maps"],
-body.contacts iframe[src*="yandex"] {
-  filter: grayscale(100%) invert(90%) contrast(85%);
-}
-
-/* === 26.15 CONTACTS — отзывы === */
+/* === 26.13 CONTACTS — отзывы === */
 body.contacts .review-card {
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.10);
+  background: #ffffff;
+  border: 1px solid #e5e5e5;
   border-radius: 16px;
 }
 
-body.contacts .review-card .review-text { color: #ffffff; }
+body.contacts .review-card .review-text { color: #111111; }
 
 body.contacts .review-card .review-author {
-  border-top-color: rgba(255, 255, 255, 0.10);
+  border-top-color: #e5e5e5;
 }
 
-body.contacts .review-name { color: #ffffff; }
-body.contacts .review-role { color: rgba(255, 255, 255, 0.6); }
-body.contacts .stars { color: #ffffff; }
+body.contacts .review-name { color: #111111; }
+body.contacts .review-role { color: #999999; }
+body.contacts .stars { color: #111111; }
 
-/* === 26.16 Плавающий виджет (тёмный, как на главной) === */
-/* Триггер и меню остаются в дефолтных тёмных цветах nike.css (var(--nike-ink))
-   для единообразия с главной. На тёмном фоне страницы они контрастируют
-   за счёт белой иконки внутри и белого текста пунктов меню при hover. */
+/* === 26.14 Плавающий виджет — light === */
+body.lessons .floating-widget,
+body.teachers .floating-widget,
+body.pricing .floating-widget,
+body.contacts .floating-widget { color: #111111; }
+
 body.lessons .floating-widget .widget-item,
 body.teachers .floating-widget .widget-item,
 body.pricing .floating-widget .widget-item,
-body.contacts .floating-widget .widget-item { color: var(--nike-ink); }
+body.contacts .floating-widget .widget-item { color: #111111; }
+
