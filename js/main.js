@@ -1,42 +1,21 @@
 /* ==========================================================================
-   ОБЩИЙ СКРИПТ — header, тема (light/dark), scroll-reveal, виджет, формы.
+   ОБЩИЙ СКРИПТ — header, scroll-reveal, виджет, формы.
+   Дизайн единый (тёмная liquid-glass тема), переключатель темы отключён.
    ========================================================================== */
 
 (function () {
   'use strict';
 
-  // ---------- ТЕМА (light / dark) ----------
-  const THEME_KEY = 'music-school-theme';
+  // ---------- ТЕМА (зафиксирована — тёмная liquid-glass) ----------
+  // Раньше был light/dark переключатель. Сейчас дизайн-система единая,
+  // тёмная. data-theme выставляем явно, чтобы CSS-токены в style.css
+  // (которые завязаны на :root[data-theme="dark"]) применялись гарантированно.
   const root = document.documentElement;
+  root.setAttribute('data-theme', 'dark');
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) meta.setAttribute('content', '#000000');
 
-  const getInitialTheme = () => {
-    const saved = localStorage.getItem(THEME_KEY);
-    if (saved === 'light' || saved === 'dark') return saved;
-    return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
-  };
-
-  const applyTheme = (theme) => {
-    root.setAttribute('data-theme', theme);
-    const meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) {
-      meta.setAttribute('content', theme === 'light' ? '#F4ECDD' : '#0F0E1A');
-    }
-    document.querySelectorAll('.theme-toggle').forEach(btn => {
-      btn.setAttribute('aria-pressed', theme === 'light' ? 'true' : 'false');
-      btn.setAttribute('aria-label', theme === 'light' ? 'Включить тёмную тему' : 'Включить светлую тему');
-    });
-  };
-
-  applyTheme(getInitialTheme());
-
-  document.addEventListener('click', e => {
-    const btn = e.target.closest('.theme-toggle');
-    if (!btn) return;
-    const current = root.getAttribute('data-theme') || 'dark';
-    const next = current === 'dark' ? 'light' : 'dark';
-    applyTheme(next);
-    localStorage.setItem(THEME_KEY, next);
-  });
+  // Theme toggle удалён — никаких .theme-toggle в HTML больше нет.
 
   // ---------- HEADER: эффект при прокрутке ----------
   // С 80px (а не 30) — хедер плавно появляется, не "мигает" на коротких
