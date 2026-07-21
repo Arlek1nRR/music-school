@@ -22,6 +22,6 @@ SUPABASE_SERVICE_ROLE_KEY=YOUR-SERVICE-ROLE-KEY
 # Email of the admin user in Supabase Auth.
 SUPABASE_ADMIN_EMAIL=admin@example.com
 
-# Admin password — only used for parity with the previous Vercel setup.
-# Real auth happens client-side via Supabase Auth; rotate if exposed.
-SUPABASE_ADMIN_PASSWORD=change-me-locally
+# NOTE: SUPABASE_ADMIN_PASSWORD is intentionally NOT here.
+# Login (admin/admin-login.js) goes through supabase.auth.signInWithPassword,
+# so the password never leaves the browser — Cloudflare doesn't need it.

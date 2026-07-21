@@ -11,8 +11,11 @@
     "not_found_handling": "404-page"
   },
   // Non-secret config — safe to commit.
-  // Secrets (SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY,
-  // SUPABASE_ADMIN_PASSWORD) live in Cloudflare via `wrangler secret put`.
+  // Secrets live in Cloudflare via `wrangler secret put`:
+  //   SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY
+  // SUPABASE_ADMIN_PASSWORD is intentionally NOT a secret here:
+  // login goes through supabase.auth.signInWithPassword on the client,
+  // so the password never reaches the Worker.
   "vars": {
     "SUPABASE_ADMIN_EMAIL": "semikovnikita2007@gmail.com"
   }
