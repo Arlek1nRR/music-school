@@ -1,0 +1,27 @@
+# Local-only environment variables for `wrangler dev`.
+#
+# USAGE:
+#   1. Copy this file to `.dev.vars`  (`.dev.vars` is gitignored).
+#   2. Fill in real values from your Supabase project dashboard
+#      (Settings → API).
+#
+# For production, set these via `wrangler secret put <NAME>` instead —
+# they will not live in the repo at all.
+
+# Supabase project URL (Settings → API → Project URL)
+SUPABASE_URL=https://YOUR-PROJECT-REF.supabase.co
+
+# Public anon key (safe to expose in browser, but still keep this
+# file out of git)
+SUPABASE_ANON_KEY=YOUR-ANON-KEY
+
+# Server-only service-role key. NEVER expose to the browser and
+# NEVER commit to git. Rotate immediately if it has leaked.
+SUPABASE_SERVICE_ROLE_KEY=YOUR-SERVICE-ROLE-KEY
+
+# Email of the admin user in Supabase Auth.
+SUPABASE_ADMIN_EMAIL=admin@example.com
+
+# Admin password — only used for parity with the previous Vercel setup.
+# Real auth happens client-side via Supabase Auth; rotate if exposed.
+SUPABASE_ADMIN_PASSWORD=change-me-locally

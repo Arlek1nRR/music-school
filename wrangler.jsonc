@@ -1,0 +1,19 @@
+{
+  // Cloudflare Workers deploy config for music-school2.
+  // Static files live in repo root — `assets.directory: "./"` tells
+  // wrangler to serve them as-is, and `not_found_handling: "404-page"`
+  // falls back to 404.html if it exists in the assets directory.
+  "name": "music-school2",
+  "compatibility_date": "2026-07-20",
+  "main": "src/index.js",
+  "assets": {
+    "directory": "./",
+    "not_found_handling": "404-page"
+  },
+  // Non-secret config — safe to commit.
+  // Secrets (SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY,
+  // SUPABASE_ADMIN_PASSWORD) live in Cloudflare via `wrangler secret put`.
+  "vars": {
+    "SUPABASE_ADMIN_EMAIL": "semikovnikita2007@gmail.com"
+  }
+}
