@@ -253,7 +253,26 @@ export default {
 
     // Всё остальное — статические ассеты, привязанные wrangler'ом
     if (env.ASSETS) {
-      return env.ASSETS.fetch(request);
+      const response = await env.ASSETS.fetch(request);
+      // Если ассет не найден и есть наш 404.html — отдаём его с 404
+      if (response.status === 404) {
+        // Fetch the bare 404.html — не редирект, без trailing-slash.
+        // Если вдруг его нет — отдаём дефолтный 404 от воркера.
+        const notFoundUrl = new URL('/404.html', request.url);
+        const notFoundReq = new Request(notFoundUrl, {
+          method: 'GET',
+          headers: request.headers,
+        });
+        const notFoundRes = await env.ASSETS.fetch(notFoundReq);
+        if (notFoundRes.status === 200) {
+          return new Response(notFoundRes.body, {
+            status: 404,
+            statusText: 'Not Found',
+            headers: { ...Object.fromEntries(notFoundRes.headers), 'Content-Type': 'text/html; charset=utf-8' },
+          });
+        }
+      }
+      return response;
     }
 
     return new Response('Assets binding missing', { status: 500 });
