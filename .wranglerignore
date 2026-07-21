@@ -1,0 +1,28 @@
+# Wrangler asset-upload exclude list.
+# Anything matched here is NOT shipped to the CDN.
+#
+# Top-level tool/skill artifacts (puppeteer scripts, diagnostics) stay
+# in repo for reproducibility but must not bloat the CDN.
+*.cjs
+*.mjs
+diagnose.js
+_check*.js
+_price_check*.js
+
+# Local-only secrets / build artifacts
+node_modules/
+.git/
+.wrangler/
+.vercel/
+*.lock
+package-lock.json
+skills-lock.json
+
+# macOS / Windows junk
+.DS_Store
+Thumbs.db
+
+# Archive folders — design screenshots and personal photos that are
+# kept in the repo for reference but are not part of the production site.
+/_archive/
+/Фото/

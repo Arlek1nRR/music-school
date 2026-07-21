@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>404 — Страница не найдена</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Bebas+Neue&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    .notfound {
+      min-height: 70vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 4rem 1.5rem;
+      gap: 1.5rem;
+    }
+    .notfound__code {
+      font-family: 'Bebas Neue', system-ui, sans-serif;
+      font-size: clamp(6rem, 18vw, 12rem);
+      line-height: 1;
+      letter-spacing: 0.02em;
+      color: var(--accent, #111111);
+    }
+    .notfound__title {
+      font-size: clamp(1.5rem, 3vw, 2.25rem);
+      font-weight: 600;
+      margin: 0;
+    }
+    .notfound__sub {
+      max-width: 32rem;
+      color: var(--muted, #5a5a5a);
+      margin: 0;
+    }
+    .notfound__btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.85rem 1.6rem;
+      border-radius: 999px;
+      background: #111111;
+      color: #fff;
+      text-decoration: none;
+      font-weight: 500;
+      transition: transform .15s ease;
+    }
+    .notfound__btn:hover { transform: translateY(-1px); }
+  </style>
+</head>
+<body>
+  <main class="notfound">
+    <div class="notfound__code">404</div>
+    <h1 class="notfound__title">Страница не найдена</h1>
+    <p class="notfound__sub">Возможно, она была перемещена или удалена. Вернитесь на главную — там вы найдёте всё, что нужно.</p>
+    <a class="notfound__btn" href="/">На главную</a>
+  </main>
+</body>
+</html>
