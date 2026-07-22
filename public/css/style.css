@@ -655,7 +655,7 @@ img { max-width: 100%; display: block; }
 }
 
 .hero-card .next-lesson {
-  font-family: "Manrope", sans-serif;
+  font-family: "Inter", system-ui, sans-serif;
   font-size: var(--fs-lg);
   font-weight: 700;
   color: var(--color-text);
@@ -1363,11 +1363,16 @@ img { max-width: 100%; display: block; }
   -webkit-backdrop-filter: blur(4px);
   box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.10);
   border-radius: var(--radius-lg);
-  overflow: hidden;
+  overflow: hidden;             /* desktop: без скролла; mobile override → auto */
   position: relative;
   transition: background 0.4s var(--ease-out);
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
 }
-
+.compare::-webkit-scrollbar { height: 4px; }
+.compare::-webkit-scrollbar-track { background: transparent; }
+.compare::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 2px; }
 /* ::before маска убрана — заменена на border: 1px solid (Bug 2 root-cause fix) */
 
 .compare-row {
@@ -1587,7 +1592,7 @@ img { max-width: 100%; display: block; }
 }
 
 .lesson-meta-item .val {
-  font-family: "Manrope", sans-serif;
+  font-family: "Inter", system-ui, sans-serif;
   font-weight: 700;
   color: var(--color-text);
   font-size: var(--fs-base);
@@ -2050,17 +2055,39 @@ a:focus-visible {
     gap: 10px;
   }
 
-  /* Мобильное меню — liquid glass */
+  /* Backdrop за мобильным меню. Создаётся в main.js при первом открытии
+     (чтобы не плодить копии в 5 HTML). Тёмный, размывает контент под ним —
+     форма и hero за меню больше не «просвечивают». */
+  .menu-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 98;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s var(--ease-out);
+  }
+  .menu-backdrop.open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* Мобильное меню — liquid glass. Фон усилен (был rgba(255,255,255,0.03)
+     — фактически прозрачный, форма просвечивала). Теперь плотный тёмный
+     фон + saturate, граница и drop-shadow для глубины. */
   .mobile-menu {
     position: fixed;
     inset: 80px 16px auto 16px;
     z-index: 99;
     padding: 24px;
-    background: rgba(255, 255, 255, 0.03);
-    background-blend-mode: luminosity;
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.10);
+    background: rgba(20, 20, 20, 0.88);
+    backdrop-filter: blur(20px) saturate(140%);
+    -webkit-backdrop-filter: blur(20px) saturate(140%);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5),
+                inset 0 1px 1px rgba(255, 255, 255, 0.10);
     border-radius: 20px;
     display: flex;
     flex-direction: column;
@@ -2068,12 +2095,9 @@ a:focus-visible {
     opacity: 0;
     transform: translateY(-10px);
     pointer-events: none;
-    transition: all 0.3s var(--ease-spring);
-    position: fixed;
+    transition: opacity 0.3s var(--ease-out), transform 0.3s var(--ease-spring);
     overflow: hidden;
   }
-
-    /* ::before маска убрана — заменена на border: 1px solid (Bug 2 root-cause fix) */
 
   .mobile-menu.open {
     opacity: 1;
@@ -2101,17 +2125,62 @@ a:focus-visible {
   .form-row { grid-template-columns: 1fr; }
   .form-card { padding: 28px 22px; }
 
+  /* Таблицы сравнения (.compare) на mobile — горизонтальный scroll-snap
+     с sticky-шапкой. Строка таблицы превращается во flex: label + ячейки
+     тянутся по контенту, всё едет горизонтальным свайпом.
+     См. также .compare { scrollbar-width } и .compare::-webkit-scrollbar. */
+  .compare { overflow-x: auto; scroll-snap-type: x proximity; }
+
   .compare-row {
-    grid-template-columns: 1fr 1fr;
-    gap: 12px 8px;
-    padding: 18px 20px;
+    display: flex;
+    grid-template-columns: none;
+    gap: 0;
+    padding: 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    min-height: 0;
+  }
+  .compare-row .label,
+  .compare-row .cell {
+    flex: 1 0 110px;
+    min-width: 110px;
+    padding: 14px 16px;
+    text-align: center;
+    font-size: var(--fs-sm);
+    border-right: 1px solid rgba(255, 255, 255, 0.06);
   }
   .compare-row .label {
-    grid-column: 1 / -1;
-    margin-bottom: 4px;
-    font-size: var(--fs-sm);
+    flex: 1 0 140px;
+    min-width: 140px;
+    text-align: left;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.7);
   }
-  .compare-row .cell { font-size: var(--fs-sm); }
+  .compare-row .cell:last-child,
+  .compare-row .label:last-child { border-right: none; }
+  .compare-row .cell.cell-wide {
+    flex: 2 0 200px;
+    text-align: left;
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  /* Sticky-шапка таблицы при горизонтальном scroll-snap */
+  .compare-row.head {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: rgba(20, 20, 20, 0.92);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-top: none;
+  }
+  .compare-row.head .label,
+  .compare-row.head .cell {
+    font-size: var(--fs-xs);
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.4);
+  }
 
   .footer-inner { grid-template-columns: 1fr; gap: 32px; }
 

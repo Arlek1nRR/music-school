@@ -33,18 +33,81 @@
   }
 
   // ---------- МОБИЛЬНОЕ МЕНЮ ----------
+  // Backdrop создаётся в JS (а не в HTML × 5 файлов), открывается/закрывается
+  // синхронно с .mobile-menu. Body scroll lock через overflow:hidden.
+  // A11y: aria-modal, focus-trap (Tab циклит по ссылкам), Esc для закрытия,
+  // возврат фокуса на .menu-toggle.
   const toggle = document.querySelector('.menu-toggle');
   const mobileMenu = document.querySelector('.mobile-menu');
   if (toggle && mobileMenu) {
-    toggle.addEventListener('click', () => {
-      const open = mobileMenu.classList.toggle('open');
+    let menuBackdrop = null;
+
+    const ensureBackdrop = () => {
+      if (!menuBackdrop) {
+        menuBackdrop = document.createElement('div');
+        menuBackdrop.className = 'menu-backdrop';
+        menuBackdrop.setAttribute('aria-hidden', 'true');
+        document.body.appendChild(menuBackdrop);
+      }
+      return menuBackdrop;
+    };
+
+    const setMenu = (open) => {
+      mobileMenu.classList.toggle('open', open);
       toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      ensureBackdrop().classList.toggle('open', open);
+      document.body.style.overflow = open ? 'hidden' : '';
+      if (open) {
+        mobileMenu.setAttribute('aria-modal', 'true');
+        mobileMenu.setAttribute('role', 'dialog');
+        const firstLink = mobileMenu.querySelector('a');
+        if (firstLink) firstLink.focus();
+      } else {
+        mobileMenu.removeAttribute('aria-modal');
+        mobileMenu.removeAttribute('role');
+      }
+    };
+
+    toggle.addEventListener('click', () => {
+      setMenu(!mobileMenu.classList.contains('open'));
     });
+
     mobileMenu.querySelectorAll('a').forEach(a => {
-      a.addEventListener('click', () => {
-        mobileMenu.classList.remove('open');
-        toggle.setAttribute('aria-expanded', 'false');
-      });
+      a.addEventListener('click', () => setMenu(false));
+    });
+
+    // Закрытие по клику на backdrop
+    document.addEventListener('click', e => {
+      if (e.target === menuBackdrop && mobileMenu.classList.contains('open')) {
+        setMenu(false);
+        toggle.focus();
+      }
+    });
+
+    // Esc — закрыть, вернуть фокус на бургер. Tab — focus-trap.
+    document.addEventListener('keydown', e => {
+      if (!mobileMenu.classList.contains('open')) return;
+
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        setMenu(false);
+        toggle.focus();
+        return;
+      }
+
+      if (e.key === 'Tab') {
+        const focusable = mobileMenu.querySelectorAll('a, button');
+        if (!focusable.length) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
     });
   }
 
