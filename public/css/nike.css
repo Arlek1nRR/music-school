@@ -30,11 +30,14 @@ body.home .site-header {
   transition: background 0.3s ease, box-shadow 0.3s ease;
 }
 
-body.home .header-inner {
-  background: transparent;
-  border: none;
-  box-shadow: none;
-}
+/* body.home .header-inner — стили берём из style.css (одинаковые для всех
+   страниц). Здесь НЕ переопределяем background/border/box-shadow, чтобы
+   шапка выглядела идентично внутренним страницам сразу при загрузке
+   (см. Bug 1). Раньше был блок:
+     body.home .header-inner {
+       background: transparent; border: none; box-shadow: none;
+     }
+   — он убран, т.к. давал "голую" шапку на главной до скролла. */
 
 body.home .header-inner.scrolled {
   background: rgba(255, 255, 255, 0.01);
@@ -42,7 +45,6 @@ body.home .header-inner.scrolled {
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
   box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.10);
-  border: none;
 }
 
 body.home .logo,
@@ -190,26 +192,7 @@ body.home a.btn-primary {
   overflow: hidden;
 }
 
-body.home .btn-primary::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 1.4px;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.45) 0%,
-    rgba(255, 255, 255, 0.15) 20%,
-    rgba(255, 255, 255, 0) 40%,
-    rgba(255, 255, 255, 0) 60%,
-    rgba(255, 255, 255, 0.15) 80%,
-    rgba(255, 255, 255, 0.45) 100%
-  );
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
-}
+/* ::before маска убрана — заменена на border: 1px solid (Bug 2 root-cause fix) */
 
 body.home .btn-primary:hover {
   background: rgba(255, 255, 255, 0.10);

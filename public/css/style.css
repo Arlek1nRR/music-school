@@ -215,26 +215,7 @@ img { max-width: 100%; display: block; }
   overflow: hidden;
 }
 
-.section-head .eyebrow::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 1.4px;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.45) 0%,
-    rgba(255, 255, 255, 0.15) 20%,
-    rgba(255, 255, 255, 0) 40%,
-    rgba(255, 255, 255, 0) 60%,
-    rgba(255, 255, 255, 0.15) 80%,
-    rgba(255, 255, 255, 0.45) 100%
-  );
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
-}
+/* .eyebrow — plain text, без рамки, ::before маска убрана (Bug 2 root-cause fix) */
 
 .section-head h2 {
   margin-bottom: 16px;
@@ -257,32 +238,38 @@ img { max-width: 100%; display: block; }
   background-blend-mode: luminosity;
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
-  border: none;
   box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.10);
   position: relative;
   overflow: hidden;
 }
 
-.liquid-glass::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 1.4px;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.45) 0%,
-    rgba(255, 255, 255, 0.15) 20%,
-    rgba(255, 255, 255, 0) 40%,
-    rgba(255, 255, 255, 0) 60%,
-    rgba(255, 255, 255, 0.15) 80%,
-    rgba(255, 255, 255, 0.45) 100%
-  );
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
+/* Единая обводка для всех liquid-glass-элементов (Bug 2 fix).
+   ::before маска убрана — border: 1px solid теперь единственный способ
+   обводки. Работает ровно на любом border-radius в любом браузере. */
+.liquid-glass,
+.glass-card,
+.hero-badge,
+.btn,
+.tag,
+.header-inner,
+.teacher-photo,
+.gallery-item,
+.award,
+.form-card,
+.compare,
+.contact-info,
+.contact-list .icon,
+.lesson-visual,
+.review-card,
+.review-avatar,
+.footer-socials .social-link,
+.widget-trigger,
+.widget-menu,
+.widget-item {
+  border: 1px solid rgba(255, 255, 255, 0.10);
 }
+
+/* ::before маска убрана — заменена на border: 1px solid ниже (Bug 2 fix) */
 
 /* ==========================================================================
    HEADER — плавающая стеклянная пилюля
@@ -312,46 +299,15 @@ img { max-width: 100%; display: block; }
   -webkit-backdrop-filter: blur(4px);
   box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.10);
   border-radius: 100px;
-  border: none;
   position: relative;
   overflow: hidden;
   transition: background 0.4s var(--ease-out), box-shadow 0.4s var(--ease-out);
 }
 
-/* Тонкая белая обводка появляется через ::before при скролле */
-.header-inner::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 1.4px;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0) 100%
-  );
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
-  transition: background 0.4s var(--ease-out);
-}
-
-.header-inner.scrolled::before {
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.45) 0%,
-    rgba(255, 255, 255, 0.15) 20%,
-    rgba(255, 255, 255, 0) 40%,
-    rgba(255, 255, 255, 0) 60%,
-    rgba(255, 255, 255, 0.15) 80%,
-    rgba(255, 255, 255, 0.45) 100%
-  );
-}
-
-.header-inner.scrolled {
-  background: rgba(255, 255, 255, 0.03);
-}
+/* Тонкая белая обводка шапки — постоянная (одинаковая в исходном и
+   проскролленном состоянии, чтобы шапка выглядела идентично внутренним
+   страницам сразу при загрузке — см. Bug 1). */
+/* ::before маска убрана — заменена на border: 1px solid (Bug 2 root-cause fix) */
 
 .logo {
   display: flex;
@@ -461,7 +417,6 @@ img { max-width: 100%; display: block; }
   font-family: "Inter", sans-serif;
   font-size: var(--fs-sm);
   font-weight: 500;
-  border: none;
   border-radius: 100px;
   cursor: pointer;
   text-align: center;
@@ -477,26 +432,7 @@ img { max-width: 100%; display: block; }
   color: #ffffff;
 }
 
-.btn::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 1.4px;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.45) 0%,
-    rgba(255, 255, 255, 0.15) 20%,
-    rgba(255, 255, 255, 0) 40%,
-    rgba(255, 255, 255, 0) 60%,
-    rgba(255, 255, 255, 0.15) 80%,
-    rgba(255, 255, 255, 0.45) 100%
-  );
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
-}
+/* ::before маска убрана — заменена на border: 1px solid (Bug 2 root-cause fix) */
 
 .btn-primary {
   background: rgba(255, 255, 255, 0.01);
@@ -604,26 +540,7 @@ img { max-width: 100%; display: block; }
   overflow: hidden;
 }
 
-.hero-badge::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 1.4px;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.45) 0%,
-    rgba(255, 255, 255, 0.15) 20%,
-    rgba(255, 255, 255, 0) 40%,
-    rgba(255, 255, 255, 0) 60%,
-    rgba(255, 255, 255, 0.15) 80%,
-    rgba(255, 255, 255, 0.45) 100%
-  );
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
-}
+/* ::before маска убрана — заменена на border: 1px solid (Bug 2 root-cause fix) */
 
 .hero-badge .pulse {
   width: 8px;
@@ -797,33 +714,13 @@ img { max-width: 100%; display: block; }
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
   box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.10);
-  border: none;
   border-radius: var(--radius-lg);
   transition: transform 0.3s var(--ease-out), box-shadow 0.3s var(--ease-out);
   overflow: hidden;
   color: #ffffff;
 }
 
-.glass-card::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 1.4px;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.45) 0%,
-    rgba(255, 255, 255, 0.15) 20%,
-    rgba(255, 255, 255, 0) 40%,
-    rgba(255, 255, 255, 0) 60%,
-    rgba(255, 255, 255, 0.15) 80%,
-    rgba(255, 255, 255, 0.45) 100%
-  );
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
-}
+/* ::before маска убрана — заменена на border: 1px solid (Bug 2 root-cause fix) */
 
 .glass-card:hover {
   transform: translateY(-4px);
@@ -890,7 +787,6 @@ img { max-width: 100%; display: block; }
   background-blend-mode: luminosity;
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
-  border: none;
   box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.10);
   border-radius: 100px;
   color: rgba(255, 255, 255, 0.7);
@@ -899,26 +795,7 @@ img { max-width: 100%; display: block; }
   overflow: hidden;
 }
 
-.tag::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 1.4px;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.45) 0%,
-    rgba(255, 255, 255, 0.15) 20%,
-    rgba(255, 255, 255, 0) 40%,
-    rgba(255, 255, 255, 0) 60%,
-    rgba(255, 255, 255, 0.15) 80%,
-    rgba(255, 255, 255, 0.45) 100%
-  );
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
-}
+/* ::before маска убрана — заменена на border: 1px solid (Bug 2 root-cause fix) */
 
 .tag.tag-accent {
   background: rgba(255, 255, 255, 0.01);
@@ -956,31 +833,11 @@ img { max-width: 100%; display: block; }
   font-weight: 400;
   color: #ffffff;
   position: relative;
-  border: none;
   transition: transform 0.5s var(--ease-spring);
   overflow: hidden;
 }
 
-.teacher-photo::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 1.4px;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.45) 0%,
-    rgba(255, 255, 255, 0.15) 20%,
-    rgba(255, 255, 255, 0) 40%,
-    rgba(255, 255, 255, 0) 60%,
-    rgba(255, 255, 255, 0.15) 80%,
-    rgba(255, 255, 255, 0.45) 100%
-  );
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
-}
+/* ::before маска убрана — заменена на border: 1px solid (Bug 2 root-cause fix) */
 
 .teacher-card:hover .teacher-photo {
   transform: scale(1.06);
@@ -1061,29 +918,9 @@ img { max-width: 100%; display: block; }
   color: rgba(255, 255, 255, 0.6);
   cursor: pointer;
   transition: transform 0.4s var(--ease-out);
-  border: none;
 }
 
-.gallery-item::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 1.4px;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.45) 0%,
-    rgba(255, 255, 255, 0.15) 20%,
-    rgba(255, 255, 255, 0) 40%,
-    rgba(255, 255, 255, 0) 60%,
-    rgba(255, 255, 255, 0.15) 80%,
-    rgba(255, 255, 255, 0.45) 100%
-  );
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
-}
+/* ::before маска убрана — заменена на border: 1px solid (Bug 2 root-cause fix) */
 
 .gallery-item:nth-child(1) { grid-row: span 2; }
 .gallery-item:nth-child(4) { grid-column: span 2; }
@@ -1128,7 +965,6 @@ img { max-width: 100%; display: block; }
   background-blend-mode: luminosity;
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
-  border: none;
   box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.10);
   border-radius: var(--radius-md);
   transition: background 0.3s var(--ease-out);
@@ -1136,26 +972,7 @@ img { max-width: 100%; display: block; }
   overflow: hidden;
 }
 
-.award::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 1.4px;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.45) 0%,
-    rgba(255, 255, 255, 0.15) 20%,
-    rgba(255, 255, 255, 0) 40%,
-    rgba(255, 255, 255, 0) 60%,
-    rgba(255, 255, 255, 0.15) 80%,
-    rgba(255, 255, 255, 0.45) 100%
-  );
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
-}
+/* ::before маска убрана — заменена на border: 1px solid (Bug 2 root-cause fix) */
 
 .award:hover {
   background: rgba(255, 255, 255, 0.06);
@@ -1201,34 +1018,16 @@ img { max-width: 100%; display: block; }
   background-blend-mode: luminosity;
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
-  border: none;
   border-radius: var(--radius-lg);
   box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.10);
   position: relative;
-  overflow: hidden;
+  /* overflow: visible — чтобы кастомный .select-menu выпадал за пределы
+     формы и не клипался (см. Bug 3). */
+  overflow: visible;
   color: #ffffff;
 }
 
-.form-card::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 1.4px;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.45) 0%,
-    rgba(255, 255, 255, 0.15) 20%,
-    rgba(255, 255, 255, 0) 40%,
-    rgba(255, 255, 255, 0) 60%,
-    rgba(255, 255, 255, 0.15) 80%,
-    rgba(255, 255, 255, 0.45) 100%
-  );
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
-}
+/* ::before маска убрана — заменена на border: 1px solid (Bug 2 root-cause fix) */
 
 .form-row {
   display: grid;
@@ -1371,7 +1170,9 @@ img { max-width: 100%; display: block; }
   top: calc(100% + 8px);
   left: 0;
   right: 0;
-  z-index: 50;
+  /* z-index 200 — выше header (100) и widget (90), чтобы меню не
+     перекрывалось псевдо-обводками и формой (см. Bug 3). */
+  z-index: 200;
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -1389,6 +1190,21 @@ img { max-width: 100%; display: block; }
   transform-origin: top center;
   pointer-events: none;
   transition: opacity 0.2s var(--ease-out), transform 0.2s var(--ease-out);
+  /* max-height + скролл: при >4 опций меню не вылезает за пределы экрана */
+  max-height: 280px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* Тонкий скроллбар в духе dark-темы */
+.select-menu::-webkit-scrollbar { width: 6px; }
+.select-menu::-webkit-scrollbar-track { background: transparent; }
+.select-menu::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 100px;
+}
+.select-menu::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25);
 }
 
 .select.open .select-menu {
@@ -1432,7 +1248,6 @@ img { max-width: 100%; display: block; }
   background: rgba(255, 255, 255, 0.10);
   border-color: rgba(255, 255, 255, 0.20);
   color: #ffffff;
-}
 }
 
 .select-option .check {
@@ -1547,33 +1362,13 @@ img { max-width: 100%; display: block; }
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
   box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.10);
-  border: none;
   border-radius: var(--radius-lg);
   overflow: hidden;
   position: relative;
   transition: background 0.4s var(--ease-out);
 }
 
-.compare::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 1.4px;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.45) 0%,
-    rgba(255, 255, 255, 0.15) 20%,
-    rgba(255, 255, 255, 0) 40%,
-    rgba(255, 255, 255, 0) 60%,
-    rgba(255, 255, 255, 0.15) 80%,
-    rgba(255, 255, 255, 0.45) 100%
-  );
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
-}
+/* ::before маска убрана — заменена на border: 1px solid (Bug 2 root-cause fix) */
 
 .compare-row {
   display: grid;
@@ -1636,9 +1431,19 @@ img { max-width: 100%; display: block; }
 
 .compare-row .cell.featured {
   color: #ffffff;
-  font-weight: 500;
-  position: relative;
-  background: rgba(255, 255, 255, 0.08);
+  /* Только font-weight: bold как единственный акцент выделенной колонки
+     (см. п.3 eyeball-фидбэка). Никаких background/box-shadow/inset обводок. */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.compare-row.head .cell.featured {
+  padding-top: 4px;
+  padding-bottom: 4px;
+  font-weight: 700;
 }
 
 .compare-row .cell .badge {
@@ -1647,50 +1452,31 @@ img { max-width: 100%; display: block; }
   font-weight: 500;
   letter-spacing: 0.1em;
   padding: 4px 10px;
-  background: var(--color-accent);
-  color: #000000;
+  /* Нейтральный тёмный фон + белый текст (п.2 eyeball-фидбэка).
+     Золотой accent убран из бейджей таблиц цен. */
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.10);
   border-radius: 100px;
-  margin-left: 8px;
+  margin-left: 0;
   vertical-align: middle;
+  /* nowrap — бейдж не переносится по словам внутри ячейки (Bug 4) */
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
-/* Мягкий бейдж для "экономии N%" — liquid glass */
+/* Мягкий бейдж для "экономии N%" — нейтральный, без золота (п.2) */
 .compare-row .cell .badge.badge-soft {
-  background: rgba(255, 255, 255, 0.01);
-  background-blend-mode: luminosity;
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.10);
-  color: rgba(255, 255, 255, 0.7);
-  border: none;
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.10);
   margin-left: 6px;
   letter-spacing: 0.05em;
   text-transform: none;
   font-weight: 500;
-  position: relative;
-  overflow: hidden;
 }
 
-.compare-row .cell .badge.badge-soft::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 1.4px;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.45) 0%,
-    rgba(255, 255, 255, 0.15) 20%,
-    rgba(255, 255, 255, 0) 40%,
-    rgba(255, 255, 255, 0) 60%,
-    rgba(255, 255, 255, 0.15) 80%,
-    rgba(255, 255, 255, 0.45) 100%
-  );
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
-}
+/* ::before маска убрана — заменена на border: 1px solid (Bug 2 root-cause fix) */
 
 /* Приглушённое тире для "неприменимо" */
 .compare-row .cell .price-muted {
@@ -1747,33 +1533,13 @@ img { max-width: 100%; display: block; }
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
   box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.10);
-  border: none;
   border-radius: var(--radius-lg);
   display: grid;
   place-items: center;
   overflow: hidden;
 }
 
-.lesson-visual::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 1.4px;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.45) 0%,
-    rgba(255, 255, 255, 0.15) 20%,
-    rgba(255, 255, 255, 0) 40%,
-    rgba(255, 255, 255, 0) 60%,
-    rgba(255, 255, 255, 0.15) 80%,
-    rgba(255, 255, 255, 0.45) 100%
-  );
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
-}
+/* ::before маска убрана — заменена на border: 1px solid (Bug 2 root-cause fix) */
 
 .lesson-visual svg {
   position: relative;
@@ -1844,33 +1610,13 @@ img { max-width: 100%; display: block; }
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
   box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.10);
-  border: none;
   border-radius: var(--radius-lg);
   position: relative;
   overflow: hidden;
   transition: background 0.4s var(--ease-out);
 }
 
-.contact-info::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 1.4px;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.45) 0%,
-    rgba(255, 255, 255, 0.15) 20%,
-    rgba(255, 255, 255, 0) 40%,
-    rgba(255, 255, 255, 0) 60%,
-    rgba(255, 255, 255, 0.15) 80%,
-    rgba(255, 255, 255, 0.45) 100%
-  );
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
-}
+/* ::before маска убрана — заменена на border: 1px solid (Bug 2 root-cause fix) */
 
 .contact-list {
   list-style: none;
@@ -1893,7 +1639,6 @@ img { max-width: 100%; display: block; }
   display: grid;
   place-items: center;
   background: rgba(255, 255, 255, 0.05);
-  border: none;
   box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.10);
   border-radius: 12px;
   color: #ffffff;
@@ -1901,26 +1646,7 @@ img { max-width: 100%; display: block; }
   overflow: hidden;
 }
 
-.contact-list .icon::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 1.4px;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.45) 0%,
-    rgba(255, 255, 255, 0.15) 20%,
-    rgba(255, 255, 255, 0) 40%,
-    rgba(255, 255, 255, 0) 60%,
-    rgba(255, 255, 255, 0.15) 80%,
-    rgba(255, 255, 255, 0.45) 100%
-  );
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
-}
+/* ::before маска убрана — заменена на border: 1px solid (Bug 2 root-cause fix) */
 
 .contact-list .info-label {
   font-size: var(--fs-xs);
@@ -1981,32 +1707,12 @@ img { max-width: 100%; display: block; }
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
   box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.10);
-  border: none;
   border-radius: var(--radius-lg);
   padding: 32px;
   overflow: hidden;
 }
 
-.review-card::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 1.4px;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.45) 0%,
-    rgba(255, 255, 255, 0.15) 20%,
-    rgba(255, 255, 255, 0) 40%,
-    rgba(255, 255, 255, 0) 60%,
-    rgba(255, 255, 255, 0.15) 80%,
-    rgba(255, 255, 255, 0.45) 100%
-  );
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
-}
+/* ::before маска убрана — заменена на border: 1px solid (Bug 2 root-cause fix) */
 
 .review-card .review-text {
   font-family: "Instrument Serif", "Times New Roman", serif;
@@ -2046,26 +1752,7 @@ img { max-width: 100%; display: block; }
   overflow: hidden;
 }
 
-.review-avatar::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 1.4px;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.45) 0%,
-    rgba(255, 255, 255, 0.15) 20%,
-    rgba(255, 255, 255, 0) 40%,
-    rgba(255, 255, 255, 0) 60%,
-    rgba(255, 255, 255, 0.15) 80%,
-    rgba(255, 255, 255, 0.45) 100%
-  );
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
-}
+/* ::before маска убрана — заменена на border: 1px solid (Bug 2 root-cause fix) */
 
 .review-name { font-weight: 500; font-size: var(--fs-sm); color: #ffffff; }
 .review-role { font-size: var(--fs-sm); color: rgba(255, 255, 255, 0.4); margin-top: 2px; }
@@ -2144,7 +1831,6 @@ img { max-width: 100%; display: block; }
   display: grid;
   place-items: center;
   background: rgba(255, 255, 255, 0.05);
-  border: none;
   box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.10);
   border-radius: 10px;
   color: rgba(255, 255, 255, 0.6);
@@ -2153,26 +1839,7 @@ img { max-width: 100%; display: block; }
   overflow: hidden;
 }
 
-.footer-socials .social-link::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 1.4px;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.45) 0%,
-    rgba(255, 255, 255, 0.15) 20%,
-    rgba(255, 255, 255, 0) 40%,
-    rgba(255, 255, 255, 0) 60%,
-    rgba(255, 255, 255, 0.15) 80%,
-    rgba(255, 255, 255, 0.45) 100%
-  );
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
-}
+/* ::before маска убрана — заменена на border: 1px solid (Bug 2 root-cause fix) */
 
 .footer-socials .social-link:hover {
   background: rgba(255, 255, 255, 0.10);
@@ -2208,31 +1875,11 @@ img { max-width: 100%; display: block; }
   place-items: center;
   cursor: pointer;
   transition: background 0.3s var(--ease-spring), transform 0.3s var(--ease-spring);
-  border: none;
   position: relative;
   overflow: hidden;
 }
 
-.widget-trigger::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 1.4px;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.45) 0%,
-    rgba(255, 255, 255, 0.15) 20%,
-    rgba(255, 255, 255, 0) 40%,
-    rgba(255, 255, 255, 0) 60%,
-    rgba(255, 255, 255, 0.15) 80%,
-    rgba(255, 255, 255, 0.45) 100%
-  );
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
-}
+/* ::before маска убрана — заменена на border: 1px solid (Bug 2 root-cause fix) */
 
 @keyframes widgetPulse {
   0%, 100% { box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.10); }
@@ -2247,7 +1894,6 @@ img { max-width: 100%; display: block; }
 .widget-trigger.open {
   background: rgba(255, 255, 255, 0.05);
   color: #ffffff;
-  border: none;
   animation: none;
 }
 
@@ -2265,7 +1911,6 @@ img { max-width: 100%; display: block; }
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.10);
-  border: none;
   border-radius: 16px;
   opacity: 0;
   transform: translateY(10px) scale(0.95);
@@ -2275,26 +1920,7 @@ img { max-width: 100%; display: block; }
   overflow: hidden;
 }
 
-.widget-menu::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 1.4px;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.45) 0%,
-    rgba(255, 255, 255, 0.15) 20%,
-    rgba(255, 255, 255, 0) 40%,
-    rgba(255, 255, 255, 0) 60%,
-    rgba(255, 255, 255, 0.15) 80%,
-    rgba(255, 255, 255, 0.45) 100%
-  );
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  pointer-events: none;
-}
+/* ::before маска убрана — заменена на border: 1px solid (Bug 2 root-cause fix) */
 
 .widget-menu.open {
   opacity: 1;
@@ -2308,7 +1934,6 @@ img { max-width: 100%; display: block; }
   gap: 12px;
   padding: 10px 14px;
   background: rgba(255, 255, 255, 0.03);
-  border: none;
   box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.08);
   border-radius: 12px;
   color: #ffffff;
@@ -2335,8 +1960,15 @@ img { max-width: 100%; display: block; }
   flex-shrink: 0;
 }
 
-.widget-item.tg .ic { background: rgba(0, 136, 204, 0.25); color: #ffffff; }
-.widget-item.wa .ic { background: rgba(37, 211, 102, 0.25); color: #ffffff; }
+/* Текстовая иконка для MAX (заглушка, SVG можно добавить позже) */
+.widget-item .ic .ic-text {
+  font-family: "Inter", sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: #ffffff;
+  line-height: 1;
+}
 
 /* ==========================================================================
    АНИМАЦИИ ПОЯВЛЕНИЯ
@@ -2429,7 +2061,6 @@ a:focus-visible {
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
     box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.10);
-    border: none;
     border-radius: 20px;
     display: flex;
     flex-direction: column;
@@ -2442,26 +2073,7 @@ a:focus-visible {
     overflow: hidden;
   }
 
-  .mobile-menu::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    padding: 1.4px;
-    background: linear-gradient(
-      180deg,
-      rgba(255, 255, 255, 0.45) 0%,
-      rgba(255, 255, 255, 0.15) 20%,
-      rgba(255, 255, 255, 0) 40%,
-      rgba(255, 255, 255, 0) 60%,
-      rgba(255, 255, 255, 0.15) 80%,
-      rgba(255, 255, 255, 0.45) 100%
-    );
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    pointer-events: none;
-  }
+    /* ::before маска убрана — заменена на border: 1px solid (Bug 2 root-cause fix) */
 
   .mobile-menu.open {
     opacity: 1;
