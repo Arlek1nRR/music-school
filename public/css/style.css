@@ -1452,36 +1452,6 @@ img { max-width: 100%; display: block; }
   font-weight: 700;
 }
 
-.compare-row .cell .badge {
-  display: inline-block;
-  font-size: 0.65rem;
-  font-weight: 500;
-  letter-spacing: 0.1em;
-  padding: 4px 10px;
-  /* Нейтральный тёмный фон + белый текст (п.2 eyeball-фидбэка).
-     Золотой accent убран из бейджей таблиц цен. */
-  background: rgba(255, 255, 255, 0.08);
-  color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  border-radius: 100px;
-  margin-left: 0;
-  vertical-align: middle;
-  /* nowrap — бейдж не переносится по словам внутри ячейки (Bug 4) */
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-
-/* Мягкий бейдж для "экономии N%" — нейтральный, без золота (п.2) */
-.compare-row .cell .badge.badge-soft {
-  background: rgba(255, 255, 255, 0.05);
-  color: rgba(255, 255, 255, 0.85);
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  margin-left: 6px;
-  letter-spacing: 0.05em;
-  text-transform: none;
-  font-weight: 500;
-}
-
 /* ::before маска убрана — заменена на border: 1px solid (Bug 2 root-cause fix) */
 
 /* Приглушённое тире для "неприменимо" */
@@ -2214,12 +2184,12 @@ a:focus-visible {
        1fr — вторая колонка (под значение) занимает весь остаток.
 
        > * { grid-column: 2 } ниже — все дети .cell (text-node,
-       <span class="cell-text">, <span class="badge">) принудительно
+       <span class="cell-text">, <small class="price-sub">) принудительно
        уходят во вторую колонку, чтобы НЕ создавать implicit grid
        и не ломать выравнивание строки. Без этого правила grid
        auto-placement раскидывает text-node цены, обёртку cell-text
-       и бейдж по 3 неявным колонкам — отсюда «смещение вправо» на
-       pricing.html. */
+       и подпись «за урок» по 3 неявным колонкам — отсюда «смещение
+       вправо» на pricing.html. */
     grid-template-columns: minmax(130px, max-content) 1fr;
     column-gap: 12px;
     align-items: baseline;
@@ -2285,20 +2255,8 @@ a:focus-visible {
     align-self: start;
   }
 
-  /* Бейдж внутри .cell — на мобиле ВСЕГДА на отдельной строке под ценой
-     (display: block). Это единообразно для всех 3 таблиц на pricing.html
-     (Цена / Цена за 1 занятие, индивидуальные / групповые / сравнение)
-     и не зависит от длины цены. На десктопе бейдж идёт inline (стили
-     в основном CSS файла). */
-  .compare-row .cell .badge {
-    display: block;
-    margin-top: 6px;
-    width: max-content;
-    max-width: 100%;
-  }
-
-  /* Цена (.cell-text) и .price-sub — на мобиле в одной строке (nowrap)
-     или с переносом, но без разрыва цены посередине. */
+  /* Цена (.cell-text) — на мобиле в одной строке (nowrap) или с
+     переносом, но без разрыва цены посередине. */
   .compare-row .cell .cell-text { white-space: nowrap; }
 
   .footer-inner { grid-template-columns: 1fr; gap: 32px; }
