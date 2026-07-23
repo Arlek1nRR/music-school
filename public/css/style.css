@@ -2203,7 +2203,16 @@ a:focus-visible {
   }
   .compare-row .cell {
     display: grid;
-    grid-template-columns: minmax(110px, 38%) 1fr;
+    /* Первая колонка (под префикс «ИНДИВИДУАЛЬНО» / «АБОНЕМЕНТ 8 ЗАНЯТИЙ»):
+       max-content — даёт колонке ширину самого длинного содержимого
+       (т.е. самого длинного data-label в карточке). На lessons.html
+       это «Индивидуально» (~100px), на pricing.html — «Абонемент 8
+       занятий» (~155px). Каждая таблица получает свою оптимальную
+       ширину колонки.
+       min 130px — защита от случая, когда data-label короче
+       (например, только «Разовое»): колонка не схлопнется.
+       1fr — вторая колонка (под значение) занимает весь остаток. */
+    grid-template-columns: minmax(130px, max-content) 1fr;
     column-gap: 12px;
     align-items: baseline;
     min-width: 0;
@@ -2212,10 +2221,6 @@ a:focus-visible {
     font-size: var(--fs-sm);
     color: rgba(255, 255, 255, 0.85);
     border-right: none;
-    /* На 320px (iPhone SE 1) "Абонемент 8 занятий" не помещается
-       в 38% от ~280px = ~106px — поэтому minmax с min 110px.
-       Значение во второй колонке переносится по словам, не ломая
-       ширину карточки. */
     overflow-wrap: break-word;
     word-break: normal;
   }
@@ -2234,18 +2239,30 @@ a:focus-visible {
 
   /* Префикс колонки для ВСЕХ ячеек с data-label.
      .cell-wide — единственное исключение (там текст на всю ширину).
-     ::before — grid-item в первой колонке, не flex-child, поэтому
-     "Абонемент 8 занятий" переносится по словам внутри колонки,
-     а не упирается в min-width как раньше. */
+
+     white-space: nowrap — метка «ИНДИВИДУАЛЬНО» / «АБОНЕМЕНТ 8 ЗАНЯТИЙ»
+     НИКОГДА не переносится. Ширину колонки (max-content) рассчитывает
+     грид — префиксу гарантированно достаточно места.
+
+     letter-spacing: 0.05em (было 0.1em) — компактнее, но всё ещё
+     читаемо как uppercase-метка. На 12px шрифте 0.1em = 1.2px на
+     символ, на «ИНДИВИДУАЛЬНО» (12 символов) = ~14px лишних.
+     С 0.05em = 7px лишних — колонка уже на ~7px, помещается
+     надёжнее.
+
+     font-size: 0.7rem (11px, было 12px / var(--fs-xs)) — ещё
+     немного компактнее. fs-xs = 0.75rem = 12px; 11px — на грани
+     читаемости, но для uppercase-метки над значением нормально. */
   .compare-row .cell:not(.cell-wide)::before {
     content: attr(data-label);
     min-width: 0;
-    font-size: var(--fs-xs);
+    white-space: nowrap;
+    font-size: 0.7rem;
     font-weight: 500;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.05em;
     text-transform: uppercase;
     color: rgba(255, 255, 255, 0.5);
-    overflow-wrap: break-word;
+    overflow-wrap: normal;
     /* Выравнивание префикса по верхней линии значения (если значение
        переносится на 2 строки — префикс остаётся на уровне первой). */
     align-self: start;
