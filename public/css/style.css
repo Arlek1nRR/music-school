@@ -2164,16 +2164,31 @@ a:focus-visible {
      и значениями (.cell) внутри. Шапка скрыта — на мобиле её роль
      играют префиксы ::before у ячеек (content: attr(data-label)).
      data-label проставлен в HTML у всех .cell (кроме .cell-wide).
-     Горизонтального скролла нет — таблица помещается в ширину viewport. */
+
+     Внутри .cell используется grid с фиксированной первой колонкой
+     (под префикс) и 1fr (под значение). Это гарантирует:
+     - префикс «ИНДИВИДУАЛЬНО» / «АБОНЕМЕНТ 8 ЗАНЯТИЙ» всегда начинается
+       с одной и той же x-позиции во всех строках карточки;
+     - значение всегда во второй колонке, переносится по словам внутри
+       неё (overflow-wrap: break-word), не выталкивает префикс за пределы
+       экрана;
+     - длинный текст вроде «Быстрого роста, нестандартного графика»
+       переносится по словам, не ломает ширину карточки. */
   .compare {
     display: block;
     overflow: visible;
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
   }
   .compare-row {
     display: block;
     padding: 18px 20px;
     border-top: 1px solid rgba(255, 255, 255, 0.06);
     min-height: 0;
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
   }
   .compare-row:first-child { border-top: none; }
   .compare-row .label {
@@ -2187,22 +2202,29 @@ a:focus-visible {
     border-right: none;
   }
   .compare-row .cell {
-    display: flex;
+    display: grid;
+    grid-template-columns: minmax(110px, 38%) 1fr;
+    column-gap: 12px;
     align-items: baseline;
-    gap: 10px;
-    flex-wrap: wrap;
     min-width: 0;
     padding: 6px 0;
     text-align: left;
     font-size: var(--fs-sm);
     color: rgba(255, 255, 255, 0.85);
     border-right: none;
+    /* На 320px (iPhone SE 1) "Абонемент 8 занятий" не помещается
+       в 38% от ~280px = ~106px — поэтому minmax с min 110px.
+       Значение во второй колонке переносится по словам, не ломая
+       ширину карточки. */
+    overflow-wrap: break-word;
+    word-break: normal;
   }
   .compare-row .cell-wide {
     display: block;
     padding: 10px 0 0;
     color: rgba(255, 255, 255, 0.6);
     font-size: var(--fs-sm);
+    overflow-wrap: break-word;
   }
 
   /* Шапка таблицы на мобиле не нужна — заголовки колонок встроены
@@ -2211,21 +2233,27 @@ a:focus-visible {
   .compare-row.head { display: none; }
 
   /* Префикс колонки для ВСЕХ ячеек с data-label.
-     .cell-wide — единственное исключение (там текст на всю ширину). */
+     .cell-wide — единственное исключение (там текст на всю ширину).
+     ::before — grid-item в первой колонке, не flex-child, поэтому
+     "Абонемент 8 занятий" переносится по словам внутри колонки,
+     а не упирается в min-width как раньше. */
   .compare-row .cell:not(.cell-wide)::before {
     content: attr(data-label);
-    flex: 0 0 auto;
-    min-width: 110px;
+    min-width: 0;
     font-size: var(--fs-xs);
     font-weight: 500;
     letter-spacing: 0.1em;
     text-transform: uppercase;
     color: rgba(255, 255, 255, 0.5);
+    overflow-wrap: break-word;
+    /* Выравнивание префикса по верхней линии значения (если значение
+       переносится на 2 строки — префикс остаётся на уровне первой). */
+    align-self: start;
   }
 
-  /* Бейджи и крупная цена внутри .cell.featured — в карточном layout
-     переносятся нормально (display: flex в .cell, flex-wrap: wrap).
-     .cell-text не должен разрываться посередине. */
+  /* Бейдж внутри .cell.featured может не помещаться в одной строке
+     со значением — разрешаем перенос, но без разрыва цены/бейджа
+     посередине. */
   .compare-row .cell .cell-text { white-space: nowrap; }
 
   .footer-inner { grid-template-columns: 1fr; gap: 32px; }
