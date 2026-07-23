@@ -17,6 +17,23 @@
 
   // Theme toggle удалён — никаких .theme-toggle в HTML больше нет.
 
+  // ---------- HEADER HEIGHT -> CSS-переменная ----------
+  // Измеряем высоту .site-header (с top: 24px) и проставляем --header-h
+  // на :root, чтобы .mobile-menu мог динамически позиционироваться
+  // ниже шапки с зазором 8px. Без этого на iOS высота шапки плавает
+  // (safe-area, font-scale) и меню "слипается" с шапкой.
+  const siteHeader = document.querySelector('.site-header');
+  if (siteHeader) {
+    const updateHeaderH = () => {
+      const h = siteHeader.getBoundingClientRect().height;
+      // bottom - top даёт полную высоту блока (top: 24px уже учтён)
+      root.style.setProperty('--header-h', Math.round(h) + 'px');
+    };
+    updateHeaderH();
+    window.addEventListener('resize', updateHeaderH);
+    window.addEventListener('orientationchange', updateHeaderH);
+  }
+
   // ---------- HEADER: эффект при прокрутке ----------
   // С 80px (а не 30) — хедер плавно появляется, не "мигает" на коротких
   // отскоках вверх, и хватает времени, чтобы юзер прокрутил мимо
