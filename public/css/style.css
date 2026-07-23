@@ -2132,7 +2132,18 @@ a:focus-visible {
     font-size: var(--fs-base);
     font-weight: 500;
     color: #ffffff;
+    /* У пунктов мобильного меню убираем обводку фокуса:
+       1) JS ставит фокус на первую ссылку при открытии
+          (main.js:64, firstLink.focus()), и outline виден сразу
+          как "рамка вокруг Главной" — сбивает с толку.
+       2) Внутри модального меню навигация мышью/тачем — Tab
+          на mobile нечастый кейс, focus ring тут лишний.
+       3) На десктопе/формах outline остаётся (см. глобальное
+          :focus-visible выше). */
+    outline: none;
   }
+  .mobile-menu a:focus,
+  .mobile-menu a:focus-visible { outline: none; }
 
   .mobile-menu a.active,
   .mobile-menu a:hover {
