@@ -2129,151 +2129,115 @@ a:focus-visible {
   .form-row { grid-template-columns: 1fr; }
   .form-card { padding: 28px 22px; }
 
-  /* Таблицы сравнения (.compare) на mobile — ЕДИНЫЙ переиспользуемый
-     компонент: таблица = один grid-контейнер (.compare), каждая строка
-     (.compare-row) = display: contents (прозрачная, не участвует в
-     layout'е, дети поднимаются в родительский grid).
+  /* Таблицы сравнения (.compare) на mobile — ВЕРТИКАЛЬНЫЕ карточки
+     вместо горизонтальной сетки колонок.
 
-     Колонки grid'а: 1 колонка под метку (.label) + N колонок под ячейки
-     данных (.cell). Число N задаётся модификатором:
-       - .compare-3 — pricing.html: 3 ячейки (РАЗОВОЕ / 4 ЗАНЯТИЯ / 8 ЗАНЯТИЙ)
-       - .compare   — по умолчанию (lessons.html): 2 ячейки
-
-     Это гарантирует идеальное выравнивание по вертикали:
-       - все метки в первой колонке (grid-column: 1) — единая левая
-         вертикаль во всех строках карточки;
-       - все .cell с одним data-label — в одной и той же колонке
-         (auto-flow по порядку) — единая вертикаль цен/значений;
-       - «лесенки» из предыдущей реализации быть не может, потому что
-         колонки общие для всей таблицы, а не для каждой строки отдельно.
+     Концепция: каждая .compare-row — это карточка-строка с заголовком
+     (.label) и одной (или несколькими) ячейками (.cell). Внутри одной
+     карточки варианты ("РАЗОВОЕ" / "4 ЗАНЯТИЯ" / "8 ЗАНЯТИЙ") лежат
+     столбиком, а не рядом — потому что узкие мобильные экраны не
+     вмещают 3 горизонтальные колонки (375px / 3 ≈ 125px, без учёта
+     gap'ов — текст "АБОНЕМЕНТ 8 ЗАНЯТИЙ" ломался посимвольно).
 
      Шапка (.head) скрыта — её роль играет ::before у каждой .cell
      (content: attr(data-label)). data-label проставлен в HTML у всех
      .cell (кроме .cell-wide). */
   .compare {
-    display: grid;
-    /* По умолчанию (lessons.html) — 1 метка + 2 ячейки. */
-    grid-template-columns: minmax(140px, max-content) repeat(2, minmax(0, 1fr));
-    column-gap: 14px;
-    row-gap: 0;
+    display: block;
     overflow: visible;
     min-width: 0;
     max-width: 100%;
     box-sizing: border-box;
   }
-  /* pricing.html: 1 метка + 3 ячейки. */
-  .compare.compare-3 {
-    grid-template-columns: minmax(140px, max-content) repeat(3, minmax(0, 1fr));
-  }
 
-  /* Строка таблицы — прозрачный контейнер. .label и .cell поднимаются
-     в родительский .compare-grid и попадают в свои колонки auto-flow'ом.
-     Внешний вид (рамки, отступы) — у самих .label / .cell. */
+  /* Строка таблицы — обычный блочный контейнер, не grid/contents. */
   .compare-row {
-    display: contents;
+    display: block;
+    padding: 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
   }
+  /* Первая ВИДИМАЯ строка (после скрытой .head) — без верхней границы.
+     :nth-child(2) = вторая .compare-row в DOM. */
+  .compare-row:nth-child(2) { border-top: none; }
 
-  /* Метка строки — всегда в первой колонке grid'а. Это даёт единую
-     левую вертикаль во всех строках карточки (а не в каждой строке
-     отдельно, как было раньше с per-row grid). */
+  /* Заголовок строки (.label) — обычный блочный текст, занимает всю
+     ширину карточки, сверху. */
   .compare-row .label {
     display: block;
-    grid-column: 1;
+    width: 100%;
     min-width: 0;
     text-align: left;
     font-size: var(--fs-base);
     font-weight: 600;
     color: var(--color-text);
-    /* Внутренние отступы карточки: текст не касается краёв/границ.
-       Горизонтальный padding — 16px (как у .container), вертикальный —
-       18px для воздуха между строками. */
-    padding: 18px 16px;
-    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    /* Внутренние отступы карточки: текст не касается краёв/границ. */
+    padding: 18px 16px 6px;
   }
-  /* Первая ВИДИМАЯ строка (после скрытой .head) — без верхней границы.
-     :nth-child(2) = вторая .compare-row в DOM. Первая — это .head
-     (display: none на мобиле), и её граница не видна; нужный нам
-     «первый ряд таблицы» = :nth-child(2). */
-  .compare-row:nth-child(2) .label,
-  .compare-row:nth-child(2) .cell { border-top: none; }
 
-  /* Ячейка данных — flex-колонка «сумма → метка → "за урок"».
-     Каждый ребёнок на своей строке (flex-basis: 100% для метки и
-     подписи), чтобы получить чистую 2-3-строчную карточку. */
+  /* Ячейка данных — flex-колонка «сумма → подпись». Сумма сверху
+     крупно, подпись (РАЗОВОЕ / 4 ЗАНЯТИЯ / 8 ЗАНЯТИЙ) мельче и
+     светлее, в одну строку. */
   .compare-row .cell {
     display: flex;
-    flex-direction: column;     /* вертикальный стек вместо row+wrap */
-    align-items: flex-start;    /* все строки прижаты к левому краю */
-    justify-content: center;
-    grid-column: auto;          /* auto-flow по порядку: 2/3/4 */
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
     min-width: 0;
-    /* Внутренние отступы карточки — те же, что у .label, для
-       единообразного «воздуха» внутри. */
-    padding: 18px 16px;
+    width: 100%;
+    /* Внутренние отступы — те же, что у .label, для единообразного
+       «воздуха» внутри карточки. */
+    padding: 6px 16px 18px;
     text-align: left;
     font-size: var(--fs-sm);
     font-weight: 500;
     color: rgba(255, 255, 255, 0.85);
-    border-top: 1px solid rgba(255, 255, 255, 0.06);
     overflow-wrap: break-word;
     word-break: normal;
   }
-  /* Широкая ячейка (Направления) — растягивается на всю ширину
-     таблицы, как на десктопе. Меньше вертикальных отступов, т.к.
-     это «сноска» под основной таблицей. */
+  /* Широкая ячейка (Направления) — сноска под основной таблицей,
+     текст на всю ширину, без ::before (там нет data-label). */
   .compare-row .cell.cell-wide {
-    grid-column: 2 / -1;
     color: rgba(255, 255, 255, 0.6);
     font-size: var(--fs-sm);
-    padding: 6px 16px;
+    padding: 6px 16px 18px;
   }
 
   /* Шапка таблицы на мобиле не нужна — заголовки колонок встроены
      в каждую ячейку через ::before (content: attr(data-label)). */
   .compare-row.head { display: none; }
 
-  /* Префикс колонки для ВСЕХ ячеек с data-label — метка формата
-     (РАЗОВОЕ / 4 ЗАНЯТИЯ / 8 ЗАНЯТИЙ).
-     .cell-wide — единственное исключение (там текст на всю ширину).
-
-     Порядок внутри ячейки (column flex): цена (order: 1) →
-     метка ::before (order: 2) → «за урок» .price-sub (order: 3).
-     Метка и подпись — на отдельных строках благодаря flex-basis: 100%.
-
-     overflow-wrap: break-word — если префикс длиннее ширины ячейки
-     (например «8 ЗАНЯТИЙ» в узкой 4-й колонке на 375px экрана),
-     он переносится по словам. Без nowrap гарантирует отсутствие
-     горизонтального overflow'а.
-
-     color — приглушённый белый (rgba 0.5), чтобы не конкурировать
-     с крупной ценой наверху, но быть читаемым. */
+  /* Метка формата (::before) — под ценой, мелко, приглушённо.
+     white-space: normal — текст переносится по словам, а не по буквам.
+     color — приглушённый белый, чтобы не конкурировать с крупной ценой. */
   .compare-row .cell:not(.cell-wide)::before {
     content: attr(data-label);
     min-width: 0;
-    width: 100%;             /* метка на отдельной строке (column flex) */
-    margin-top: 4px;         /* лёгкий зазор от цены сверху */
-    font-size: 0.7rem;
-    font-weight: 500;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.5);
-    overflow-wrap: break-word;
-    order: 2;
+    max-width: 100%;
+    margin-top: 4px;
+    font-size: 0.85rem;       /* читаемый размер для подписи */
+    font-weight: 400;
+    text-transform: lowercase; /* «разовое» / «4 занятия» / «8 занятий» */
+    color: rgba(255, 255, 255, 0.55);
+    overflow-wrap: normal;
+    word-break: normal;
+    white-space: normal;
   }
-  /* Цена — на самом верху карточки (order: 1), крупно. */
+  /* Цена — на самом верху ячейки, крупно и жирно.
+     white-space: nowrap — сумма не разрывается посередине. */
   .compare-row .cell .cell-text {
-    order: 1;
-    font-size: 1.05rem;      /* чуть крупнее базового, выделяется как главное */
+    font-size: 1.1rem;
     font-weight: 700;
     color: #ffffff;
     line-height: 1.2;
     white-space: nowrap;
   }
-  /* «за урок» — под меткой (order: 3), мелко и приглушённо.
-     Не во всех ячейках есть — только в таблице «Сравнение». */
+  /* «за урок» — на следующей строке под меткой (если есть).
+     Объединяем визуально: "разовое · за урок" на одной строке не
+     делаем — оставляем подпись отдельной строкой для ясности. */
   .compare-row .cell .price-sub {
-    order: 3;
-    width: 100%;
     margin-top: 2px;
     font-size: 0.75rem;
     color: rgba(255, 255, 255, 0.5);
