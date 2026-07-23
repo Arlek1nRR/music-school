@@ -2211,7 +2211,15 @@ a:focus-visible {
        ширину колонки.
        min 130px — защита от случая, когда data-label короче
        (например, только «Разовое»): колонка не схлопнется.
-       1fr — вторая колонка (под значение) занимает весь остаток. */
+       1fr — вторая колонка (под значение) занимает весь остаток.
+
+       > * { grid-column: 2 } ниже — все дети .cell (text-node,
+       <span class="cell-text">, <span class="badge">) принудительно
+       уходят во вторую колонку, чтобы НЕ создавать implicit grid
+       и не ломать выравнивание строки. Без этого правила grid
+       auto-placement раскидывает text-node цены, обёртку cell-text
+       и бейдж по 3 неявным колонкам — отсюда «смещение вправо» на
+       pricing.html. */
     grid-template-columns: minmax(130px, max-content) 1fr;
     column-gap: 12px;
     align-items: baseline;
@@ -2223,6 +2231,15 @@ a:focus-visible {
     border-right: none;
     overflow-wrap: break-word;
     word-break: normal;
+  }
+  /* Все дети .cell (кроме ::before) уходят во вторую колонку.
+     ::before остаётся в первой (auto-placement). Это решает
+     проблему "смещения вправо" на pricing.html, где в одной
+     ячейке были text-node + cell-text + badge — каждый из них
+     становился implicit grid-item. */
+  .compare-row .cell > * {
+    grid-column: 2;
+    min-width: 0;
   }
   .compare-row .cell-wide {
     display: block;
@@ -2268,9 +2285,20 @@ a:focus-visible {
     align-self: start;
   }
 
-  /* Бейдж внутри .cell.featured может не помещаться в одной строке
-     со значением — разрешаем перенос, но без разрыва цены/бейджа
-     посередине. */
+  /* Бейдж внутри .cell — на мобиле ВСЕГДА на отдельной строке под ценой
+     (display: block). Это единообразно для всех 3 таблиц на pricing.html
+     (Цена / Цена за 1 занятие, индивидуальные / групповые / сравнение)
+     и не зависит от длины цены. На десктопе бейдж идёт inline (стили
+     в основном CSS файла). */
+  .compare-row .cell .badge {
+    display: block;
+    margin-top: 6px;
+    width: max-content;
+    max-width: 100%;
+  }
+
+  /* Цена (.cell-text) и .price-sub — на мобиле в одной строке (nowrap)
+     или с переносом, но без разрыва цены посередине. */
   .compare-row .cell .cell-text { white-space: nowrap; }
 
   .footer-inner { grid-template-columns: 1fr; gap: 32px; }
