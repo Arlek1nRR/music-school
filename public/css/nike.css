@@ -105,6 +105,18 @@ body.contacts {
   background: #000000;
 }
 
+/* Явный min-height хедера на внутренних страницах — чтобы шапка
+   гарантированно не сжималась относительно главной. Дефолтное
+   правило .header-inner { min-height: 60px } уже есть в style.css,
+   здесь дублируем явно для каскадной устойчивости (если в
+   будущем кто-то добавит правило выше по специфичности). */
+body.lessons .header-inner,
+body.teachers .header-inner,
+body.pricing .header-inner,
+body.contacts .header-inner {
+  min-height: 60px;
+}
+
 body.lessons .hero,
 body.teachers .hero,
 body.pricing .hero,
