@@ -19,12 +19,9 @@ body.home {
 
 /* Когда страница только загружена, хедер прозрачный поверх тёмного hero.
    JS добавляет .scrolled после 80px прокрутки → header-inner становится
-   liquid-glass pill (стили уже в style.css). */
+   liquid-glass pill (стили уже в style.css). Позиция (top: 0, fixed)
+   наследуется из style.css — единый компонент для всех страниц. */
 body.home .site-header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
   background: transparent;
   box-shadow: none;
   transition: background 0.3s ease, box-shadow 0.3s ease;

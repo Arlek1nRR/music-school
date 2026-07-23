@@ -276,7 +276,7 @@ img { max-width: 100%; display: block; }
    ========================================================================== */
 .site-header {
   position: fixed;
-  top: 24px;
+  top: 0;
   left: 0;
   right: 0;
   z-index: 100;
